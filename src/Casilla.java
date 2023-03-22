@@ -7,7 +7,7 @@ public class Casilla {
     public Casilla(){
         objeto = null;
         boton = new JButton();
-        boton.setEnabled(true);
+        boton.setEnabled(false);
     }
 
     public Object getObjeto(){

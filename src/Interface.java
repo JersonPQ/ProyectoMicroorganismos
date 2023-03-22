@@ -21,12 +21,10 @@ public class Interface {
         mapaPanel.setLayout(new GridLayout(50, 50));
 
         miMapa = new Mapa();
-
         for(Casilla[] array: miMapa.getDimension()){
             for(Casilla elemento: array){
-                //(elemento.boton).setPreferredSize(new Dimension(40, 40));
-                // mapaPanel.add(elemento.boton);
-                System.out.println(elemento);
+                (elemento.boton).setPreferredSize(new Dimension(40, 40));
+                mapaPanel.add(elemento.boton);
             }
         }
         ventana.add(mapaPanel, BorderLayout.CENTER);
