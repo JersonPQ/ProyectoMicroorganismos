@@ -20,5 +20,5 @@ public class Casilla {
 
     public void setObjeto(Alimento _objeto){
         objeto = _objeto;
-    }
+    }   
 }
