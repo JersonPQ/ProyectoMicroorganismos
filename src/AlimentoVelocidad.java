@@ -8,7 +8,7 @@ public class AlimentoVelocidad extends Alimento{
     }
 
     public ImageIcon setImagen(){
-        ImageIcon imagen = new ImageIcon("limon.png");
+        ImageIcon imagen = new ImageIcon("images/limon.png");
         return imagen;
     }
 }

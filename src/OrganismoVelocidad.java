@@ -57,7 +57,7 @@ public class OrganismoVelocidad extends Organismo{
     }
 
     public ImageIcon setImagen(){
-        ImageIcon imagen = new ImageIcon("tortuga-marina.png");
+        ImageIcon imagen = new ImageIcon("images/tortuga-marina.png");
         return imagen;
     }
 }

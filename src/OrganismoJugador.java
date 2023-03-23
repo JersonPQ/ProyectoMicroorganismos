@@ -51,7 +51,7 @@ public class OrganismoJugador extends Organismo{
     }
 
     public ImageIcon setImagen(){
-        ImageIcon imagen = new ImageIcon("leon.png");
+        ImageIcon imagen = new ImageIcon("images/leon.png");
         return imagen;
     }
 }

@@ -8,7 +8,7 @@ public class AlimentoEnergia extends Alimento{
     }
 
     public ImageIcon setImagen(){
-        ImageIcon imagen = new ImageIcon("fresa.png");
+        ImageIcon imagen = new ImageIcon("images/fresa.png");
         return imagen;
     }
 }
