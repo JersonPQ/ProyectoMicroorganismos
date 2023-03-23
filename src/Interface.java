@@ -40,7 +40,7 @@ public class Interface {
         //Poniendo las casillas del tablero
         for(Casilla[] array: dimensionMatriz){
             for(Casilla elemento: array){
-                (elemento.boton).setPreferredSize(new Dimension(100, 100));
+                (elemento.boton).setPreferredSize(new Dimension(40, 40));
                 if(elemento.getObjeto() != null){
                     objetoComparando = elemento.getObjeto().getClass();
                     // comparar si la clase objetoComparando es algún tipo de organismo
@@ -51,7 +51,7 @@ public class Interface {
                         imagen = ((Alimento) elemento.getObjeto()).setImagen();
                     }
 
-                    (elemento.boton).setIcon(new ImageIcon(imagen.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH)));   
+                    (elemento.boton).setIcon(new ImageIcon(imagen.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));   
                 }
                 mapaPanel.add(elemento.boton);
             }
