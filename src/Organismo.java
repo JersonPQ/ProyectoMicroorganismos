@@ -1,5 +1,7 @@
 import java.util.Random;
 
+import javax.swing.ImageIcon;
+
 public abstract class Organismo {
     protected int energia = 1;
     protected int vision = 1;
@@ -15,5 +17,5 @@ public abstract class Organismo {
     public abstract void atacar(AlimentoEnergia alimentoEnergia);
     public abstract void atacar(AlimentoVelocidad alimentoVelocidad);
     public abstract void atacar(AlimentoVision alimentoVision);
-
+    public abstract ImageIcon setImagen();
 }

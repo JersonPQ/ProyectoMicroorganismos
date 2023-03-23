@@ -4,6 +4,8 @@ public class Mapa {
     private Casilla[][] matriz;
     private Casilla casilla;
     private double valorAleatorio;
+    private int posX;
+    private int posY;
 
     public Mapa(){
         matriz = new Casilla[50][50];
@@ -43,9 +45,40 @@ public class Mapa {
                 alimentos[i] = new AlimentoVelocidad();
             }
         }
+
+        //Colocando los organismos aleatoriamente
+        for(Organismo org: organismos){
+            do{
+                posX = (int)(Math.floor(Math.random()*49+0));
+                posY = (int)(Math.floor(Math.random()*49+0));
+                if(matriz[posX][posY].getObjeto() == null){
+                    matriz[posX][posY].setObjeto(org);
+                }
+                }while(matriz[posX][posY].getObjeto() == null);
+        }
+
+        //Colocando los alimentos aleatoriamente
+        for(Alimento alimen: alimentos){
+            do{
+                posX = (int)(Math.floor(Math.random()*49+0));
+                posY = (int)(Math.floor(Math.random()*49+0));
+                if(matriz[posX][posY].getObjeto() == null){
+                    matriz[posX][posY].setObjeto(alimen);
+                }
+                }while(matriz[posX][posY].getObjeto() == null);
+        }
     }
 
+    //Getters
     public Casilla[][] getDimension(){
         return matriz;
+    }
+
+    public Organismo[] getOrganismos(){
+        return organismos;
+    }
+
+    public Casilla getCasilla(int i, int j){
+        return matriz[i][j];
     }
 }

@@ -13,4 +13,12 @@ public class Casilla {
     public Object getObjeto(){
         return objeto;
     }
+
+    public void setObjeto(Organismo _objeto){
+        objeto = _objeto;
+    }
+
+    public void setObjeto(Alimento _objeto){
+        objeto = _objeto;
+    }
 }

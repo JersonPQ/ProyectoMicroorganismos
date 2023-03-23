@@ -1,3 +1,5 @@
+import javax.swing.ImageIcon;
+
 public class OrganismoVision extends Organismo{
 
     public OrganismoVision(){
@@ -53,4 +55,10 @@ public class OrganismoVision extends Organismo{
     public void atacar(AlimentoVelocidad alimentoVelocidad){
         this.velocidad += alimentoVelocidad.getAtributo();
     }
+
+    public ImageIcon setImagen(){
+        ImageIcon imagen = new ImageIcon("loro.png");
+        return imagen;
+    }
+
 }

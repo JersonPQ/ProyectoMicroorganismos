@@ -1,3 +1,5 @@
+import javax.swing.ImageIcon;
+
 public class OrganismoVelocidad extends Organismo{
 
     public OrganismoVelocidad(){
@@ -52,5 +54,10 @@ public class OrganismoVelocidad extends Organismo{
 
     public void atacar(AlimentoVelocidad alimentoVelocidad){
         this.velocidad += alimentoVelocidad.getAtributo();
+    }
+
+    public ImageIcon setImagen(){
+        ImageIcon imagen = new ImageIcon("tortuga-marina.png");
+        return imagen;
     }
 }

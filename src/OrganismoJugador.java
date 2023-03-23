@@ -1,3 +1,5 @@
+import javax.swing.ImageIcon;
+
 public class OrganismoJugador extends Organismo{
     public OrganismoJugador(){
         energia = 1;
@@ -46,5 +48,10 @@ public class OrganismoJugador extends Organismo{
 
     public void atacar(AlimentoVelocidad alimentoVelocidad){
         this.velocidad += alimentoVelocidad.getAtributo();
+    }
+
+    public ImageIcon setImagen(){
+        ImageIcon imagen = new ImageIcon("leon.png");
+        return imagen;
     }
 }
