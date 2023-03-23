@@ -16,9 +16,11 @@ public class Casilla {
 
     public void setObjeto(Organismo _objeto){
         objeto = _objeto;
+        boton.setEnabled(true);
     }
 
     public void setObjeto(Alimento _objeto){
         objeto = _objeto;
+        boton.setEnabled(true);
     }
 }

@@ -8,7 +8,7 @@ public class AlimentoVision extends Alimento{
     }
 
     public ImageIcon setImagen(){
-        ImageIcon imagen = new ImageIcon("images/manazana.png");
+        ImageIcon imagen = new ImageIcon("images/manzana.png");
         return imagen;
     }
 }
