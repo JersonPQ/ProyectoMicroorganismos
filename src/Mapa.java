@@ -57,7 +57,7 @@ public class Mapa {
                 }
                 }while(matriz[posX][posY].getObjeto() == null);
         }
-
+        System.out.print(organismos[0].getPosicion()[0] + " - " + organismos[0].getPosicion()[1]);
         //Colocando los alimentos aleatoriamente
         for(Alimento alimen: alimentos){
             do{

@@ -23,4 +23,9 @@ public class Casilla {
         objeto = _objeto;
         boton.setEnabled(true);
     }
+
+    public void setObjeto(){
+        objeto = null;
+        boton.setEnabled(false);
+    }
 }
