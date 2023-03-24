@@ -14,6 +14,10 @@ public class OrganismoJugador extends Organismo{
         this.pos[1] = j;
     }
 
+    public int[] getPosicion(){
+        return this.pos;
+    }
+
     public void moverse() {
         /* CODE */
     }

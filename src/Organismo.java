@@ -18,4 +18,5 @@ public abstract class Organismo {
     public abstract void atacar(AlimentoVelocidad alimentoVelocidad);
     public abstract void atacar(AlimentoVision alimentoVision);
     public abstract ImageIcon setImagen();
+    public abstract int[] getPosicion();
 }

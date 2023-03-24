@@ -53,6 +53,7 @@ public class Mapa {
                 posY = (int)(Math.floor(Math.random()*49+0));
                 if(matriz[posX][posY].getObjeto() == null){
                     matriz[posX][posY].setObjeto(org);
+                    org.setPosition(posX, posY);
                 }
                 }while(matriz[posX][posY].getObjeto() == null);
         }
