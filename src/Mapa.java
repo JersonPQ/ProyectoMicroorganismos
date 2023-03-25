@@ -7,6 +7,11 @@ public class Mapa {
     private int posX;
     private int posY;
 
+    private int filaInicial, filaFinal, columnaInicial, columnaFinal, contBusqueda;
+    private double distanciaPuntos;
+    private boolean buscarFilInicial = true, buscarFilFinal = true;
+    private boolean buscarColInicial = true, buscarColFinal = true;
+
     public Mapa(){
         matriz = new Casilla[50][50];
         alimentos = new Alimento[10];
@@ -57,7 +62,8 @@ public class Mapa {
                 }
                 }while(matriz[posX][posY].getObjeto() == null);
         }
-        System.out.print(organismos[0].getPosicion()[0] + " - " + organismos[0].getPosicion()[1]);
+
+        System.out.println(organismos[0].getPosicion()[0] + " - " + organismos[0].getPosicion()[1]);
         //Colocando los alimentos aleatoriamente
         for(Alimento alimen: alimentos){
             do{
@@ -69,6 +75,247 @@ public class Mapa {
                 }while(matriz[posX][posY].getObjeto() == null);
         }
     }
+
+    public int[] busqueda(OrganismoVelocidad o){
+        int[] indiceAlimento = {o.pos[0], o.pos[1]};
+        // distancia maxima que puede haber entre puntos
+        distanciaPuntos = Math.sqrt(Math.pow(matriz.length, 2) + Math.pow(matriz[0].length, 2));
+        contBusqueda = 0;
+        filaInicial = o.pos[0] - 1;
+        filaFinal = o.pos[0] + 1;
+        columnaInicial = o.pos[1] - 1;
+        columnaFinal = o.pos[1] + 1;
+
+        // flags indican si es necesario buscar en esas filas/columnas
+        if (filaInicial < 0) {
+            filaInicial = 0;
+            buscarFilInicial = false;
+        }
+        
+        if (filaFinal >= matriz.length){
+            filaFinal = matriz.length -1;
+            buscarFilFinal = false;
+        }
+        
+        if (columnaInicial < 0){
+            columnaInicial = 0;
+            buscarColInicial = false;
+        }
+        
+        if (columnaFinal >= matriz[0].length){
+            columnaFinal = matriz[0].length - 1;
+            buscarColFinal = false;
+        }
+        // falta verificar si Organismo tiene un organismo cerca
+        while (o.vision > contBusqueda){
+            // busqueda horizontal de izquierda a derecha arriba de organismo
+            if (buscarFilInicial && filaInicial >= 0){
+                for (int i = columnaInicial; i < columnaFinal; i++){
+                    if (i >= matriz[0].length){
+                        break;
+                    }
+                    
+                    if ((matriz[filaInicial][i].getObjeto()) instanceof Alimento && distanciaPuntos > Math.sqrt(Math.pow(filaInicial - o.pos[0], 2) + Math.pow(i - o.pos[1], 2))){
+                        indiceAlimento[0] = filaInicial;
+                        indiceAlimento[1] = i;
+                        distanciaPuntos = Math.sqrt(Math.pow(filaInicial - o.pos[0], 2) + Math.pow(i - o.pos[1], 2));
+                    }
+                }
+            }
+
+            // busqueda vertical de arriba a abajo a la derecha del organismo
+            if (buscarColFinal && columnaFinal < matriz[0].length){
+                for (int i = filaInicial; i < filaFinal; i++){
+                    if (i >= matriz.length){
+                        break;
+                    }
+                    
+                    if ((matriz[i][columnaFinal].getObjeto()) instanceof Alimento && distanciaPuntos > Math.sqrt(Math.pow(i - o.pos[0], 2) + Math.pow(columnaFinal - o.pos[1], 2))){
+                        indiceAlimento[0] = i;
+                        indiceAlimento[1] = columnaFinal;
+                        distanciaPuntos = Math.sqrt(Math.pow(i - o.pos[0], 2) + Math.pow(columnaFinal - o.pos[1], 2));
+                    }
+                }
+            }
+
+            // busqueda horizontal de derecha a izquierda abajo del organismo
+            if (buscarFilFinal && filaFinal < matriz.length){
+                for (int i = columnaFinal; i > columnaInicial; i--){
+                    if (i < 0){
+                        break;
+                    }
+                    
+                    if ((matriz[filaFinal][i].getObjeto()) instanceof Alimento && distanciaPuntos > Math.sqrt(Math.pow(filaFinal - o.pos[0], 2) + Math.pow(i - o.pos[1], 2))){
+                        indiceAlimento[0] = filaFinal;
+                        indiceAlimento[1] = i;
+                        distanciaPuntos = Math.sqrt(Math.pow(filaFinal - o.pos[0], 2) + Math.pow(i - o.pos[1], 2));
+                    }
+                }
+            }
+
+            // busqueda vertical de abajo hacia arriba a la izquierda del organismo
+            if (buscarColInicial && columnaInicial >= 0){
+                for (int i = filaFinal; i > filaInicial; i--){
+                    if (i < 0){
+                        break;
+                    }
+                    
+                    if ((matriz[i][columnaInicial].getObjeto()) instanceof Alimento && distanciaPuntos > Math.sqrt(Math.pow(i - o.pos[0], 2) + Math.pow(columnaInicial - o.pos[1], 2))){
+                        indiceAlimento[0] = i;
+                        indiceAlimento[1] = columnaInicial;
+                        distanciaPuntos = Math.sqrt(Math.pow(i - o.pos[0], 2) + Math.pow(columnaInicial - o.pos[1], 2));
+                    }
+                }
+            }
+
+            // verificar si el Alimento encontrado es AlimentoVelocidad
+            if (matriz[indiceAlimento[0]][indiceAlimento[1]].getObjeto() instanceof AlimentoVelocidad){
+                return indiceAlimento;
+            }
+
+            if (filaInicial > 0){
+                filaInicial--;
+            }
+            
+            if (filaFinal < matriz.length - 1){
+                filaFinal++;
+            }
+            
+            if (columnaInicial > 0){
+                columnaInicial--;
+            }
+
+            if (columnaFinal < matriz[0].length - 1){
+                columnaFinal++;
+            }
+
+            ++contBusqueda;
+        }
+
+        // si no encuentra Alimento retorna la mismas posicion del Organismo
+        return indiceAlimento;
+    }
+
+    public int[] busqueda(OrganismoVision o){
+        int[] indiceAlimento = {o.pos[0], o.pos[1]};
+        // distancia maxima que puede haber entre puntos
+        distanciaPuntos = Math.sqrt(Math.pow(matriz.length, 2) + Math.pow(matriz[0].length, 2));
+        contBusqueda = 0;
+        filaInicial = o.pos[0] - 1;
+        filaFinal = o.pos[0] + 1;
+        columnaInicial = o.pos[1] - 1;
+        columnaFinal = o.pos[1] + 1;
+
+        // flags indican si es necesario buscar en esas filas/columnas
+        if (filaInicial < 0) {
+            filaInicial = 0;
+            buscarFilInicial = false;
+        }
+        
+        if (filaFinal >= matriz.length){
+            filaFinal = matriz.length -1;
+            buscarFilFinal = false;
+        }
+        
+        if (columnaInicial < 0){
+            columnaInicial = 0;
+            buscarColInicial = false;
+        }
+        
+        if (columnaFinal >= matriz[0].length){
+            columnaFinal = matriz[0].length - 1;
+            buscarColFinal = false;
+        }
+        // falta verificar si Organismo tiene un organismo cerca
+        while (o.vision > contBusqueda){
+            // busqueda horizontal de izquierda a derecha arriba de organismo
+            if (buscarFilInicial && filaInicial >= 0){
+                for (int i = columnaInicial; i < columnaFinal; i++){
+                    if (i >= matriz[0].length){
+                        break;
+                    }
+                    
+                    if ((matriz[filaInicial][i].getObjeto()) instanceof Alimento && distanciaPuntos > Math.sqrt(Math.pow(filaInicial - o.pos[0], 2) + Math.pow(i - o.pos[1], 2))){
+                        indiceAlimento[0] = filaInicial;
+                        indiceAlimento[1] = i;
+                        distanciaPuntos = Math.sqrt(Math.pow(filaInicial - o.pos[0], 2) + Math.pow(i - o.pos[1], 2));
+                    }
+                }
+            }
+
+            // busqueda vertical de arriba a abajo a la derecha del organismo
+            if (buscarColFinal && columnaFinal < matriz[0].length){
+                for (int i = filaInicial; i < filaFinal; i++){
+                    if (i >= matriz.length){
+                        break;
+                    }
+                    
+                    if ((matriz[i][columnaFinal].getObjeto()) instanceof Alimento && distanciaPuntos > Math.sqrt(Math.pow(i - o.pos[0], 2) + Math.pow(columnaFinal - o.pos[1], 2))){
+                        indiceAlimento[0] = i;
+                        indiceAlimento[1] = columnaFinal;
+                        distanciaPuntos = Math.sqrt(Math.pow(i - o.pos[0], 2) + Math.pow(columnaFinal - o.pos[1], 2));
+                    }
+                }
+            }
+
+            // busqueda horizontal de derecha a izquierda abajo del organismo
+            if (buscarFilFinal && filaFinal < matriz.length){
+                for (int i = columnaFinal; i > columnaInicial; i--){
+                    if (i < 0){
+                        break;
+                    }
+                    
+                    if ((matriz[filaFinal][i].getObjeto()) instanceof Alimento && distanciaPuntos > Math.sqrt(Math.pow(filaFinal - o.pos[0], 2) + Math.pow(i - o.pos[1], 2))){
+                        indiceAlimento[0] = filaFinal;
+                        indiceAlimento[1] = i;
+                        distanciaPuntos = Math.sqrt(Math.pow(filaFinal - o.pos[0], 2) + Math.pow(i - o.pos[1], 2));
+                    }
+                }
+            }
+
+            // busqueda vertical de abajo hacia arriba a la izquierda del organismo
+            if (buscarColInicial && columnaInicial >= 0){
+                for (int i = filaFinal; i > filaInicial; i--){
+                    if (i < 0){
+                        break;
+                    }
+                    
+                    if ((matriz[i][columnaInicial].getObjeto()) instanceof Alimento && distanciaPuntos > Math.sqrt(Math.pow(i - o.pos[0], 2) + Math.pow(columnaInicial - o.pos[1], 2))){
+                        indiceAlimento[0] = i;
+                        indiceAlimento[1] = columnaInicial;
+                        distanciaPuntos = Math.sqrt(Math.pow(i - o.pos[0], 2) + Math.pow(columnaInicial - o.pos[1], 2));
+                    }
+                }
+            }
+
+            // verificar si el Alimento encontrado es AlimentoVelocidad
+            if (matriz[indiceAlimento[0]][indiceAlimento[1]].getObjeto() instanceof AlimentoVision){
+                return indiceAlimento;
+            }
+
+            if (filaInicial > 0){
+                filaInicial--;
+            }
+            
+            if (filaFinal < matriz.length - 1){
+                filaFinal++;
+            }
+            
+            if (columnaInicial > 0){
+                columnaInicial--;
+            }
+
+            if (columnaFinal < matriz[0].length - 1){
+                columnaFinal++;
+            }
+
+            ++contBusqueda;
+        }
+
+        // si no encuentra Alimento retorna la mismas posicion del Organismo
+        return indiceAlimento;
+    }
+
 
     //Getters
     public Casilla[][] getDimension(){

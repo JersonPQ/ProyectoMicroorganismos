@@ -9,20 +9,6 @@ public class OrganismoVision extends Organismo{
         edad = 1;
     }
 
-    public void setPosition(int i, int j){
-        this.pos = new int[2];
-        this.pos[0] = i;
-        this.pos[1] = j;
-    }
-
-    public int[] getPosicion(){
-        return this.pos;
-    }
-
-    public void moverse() {
-        /* CODE */
-    }
-
     public void atacar(Organismo organismoAComer) {
         if (energia == organismoAComer.energia && velocidad == organismoAComer.velocidad && edad == organismoAComer.edad){
             ganadorAleatorio = rnd.nextBoolean();
@@ -60,11 +46,11 @@ public class OrganismoVision extends Organismo{
         this.velocidad += alimentoVelocidad.getAtributo();
     }
 
-    public ImageIcon setImagen(){
-        ImageIcon imagen = new ImageIcon("images/loro.png");
-        return imagen;
+    // getters
+    public int[] getPosicion(){
+        return this.pos;
     }
-
+    
     public String getInformacion(){
         return "Organismo Vision\n" + 
         "\tEnergia: " + energia + "\n" + 
@@ -72,4 +58,16 @@ public class OrganismoVision extends Organismo{
         "\tVelocidad: " + velocidad + "\n" +
         "\tEdad: " + edad;
     }  
+    // setters
+    public void setPosition(int i, int j){
+        this.pos = new int[2];
+        this.pos[0] = i;
+        this.pos[1] = j;
+    }
+
+    public ImageIcon setImagen(){
+        ImageIcon imagen = new ImageIcon("images/loro.png");
+        return imagen;
+    }
+
 }

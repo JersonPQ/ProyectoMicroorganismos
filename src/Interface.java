@@ -7,10 +7,13 @@ import java.awt.event.KeyEvent;
 
 public class Interface {
     private JFrame ventana;
-    private Mapa miMapa = new Mapa();;
+    private Mapa miMapa = new Mapa();
     private ImageIcon imagen;
     private String informacion;
 
+    private Organismo[] organismos;
+    private int[] indiceEncontrado;
+    private int[] posicionOrganismo;
 
     public Interface(){
         ventana = new JFrame();
@@ -24,6 +27,8 @@ public class Interface {
         ventana.setFocusable(true);
         ventana.pack();
         ventana.setVisible(true);
+
+        simular();
     }
 
     public void addComponentes(){
@@ -63,6 +68,23 @@ public class Interface {
         }
 
         ventana.add(mapaPanel);
+    }
+
+    public void simular(){
+        organismos = miMapa.getOrganismos();
+        for (int i = 1; i < organismos.length; ++i){
+            if (organismos[i] instanceof OrganismoVelocidad){
+                posicionOrganismo = organismos[i].getPosicion();
+                System.out.println("Organismo velocidad en la posicion (" + posicionOrganismo[0] + ", " + posicionOrganismo[1] + ")");
+                indiceEncontrado = miMapa.busqueda((OrganismoVelocidad) organismos[i]);
+                System.out.println(indiceEncontrado[0] + ", " + indiceEncontrado[1]);
+            } else if (organismos[i] instanceof OrganismoVision) {
+                posicionOrganismo = organismos[i].getPosicion();
+                System.out.println("Organismo vision en la posicion (" + posicionOrganismo[0] + ", " + posicionOrganismo[1] + ")");
+                indiceEncontrado = miMapa.busqueda((OrganismoVision) organismos[i]);
+                System.out.println(indiceEncontrado[0] + ", " + indiceEncontrado[1]);
+            }
+        }
     }
 
     //Crear la clase KeyListenes
