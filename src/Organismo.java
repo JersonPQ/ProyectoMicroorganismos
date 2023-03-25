@@ -2,7 +2,7 @@ import java.util.Random;
 
 import javax.swing.ImageIcon;
 
-public abstract class Organismo {
+public abstract class Organismo implements NPC{
     protected int energia = 1;
     protected int vision = 1;
     protected int velocidad = 1;
@@ -19,4 +19,5 @@ public abstract class Organismo {
     public abstract void atacar(AlimentoVision alimentoVision);
     public abstract ImageIcon setImagen();
     public abstract int[] getPosicion();
+    public abstract String getInformacion();
 }

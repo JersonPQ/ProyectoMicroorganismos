@@ -11,4 +11,9 @@ public class AlimentoEnergia extends Alimento{
         ImageIcon imagen = new ImageIcon("images/fresa.png");
         return imagen;
     }
+
+    public String getInformacion(){
+        return "Alimento Energía\n" + 
+        "\tEnergia brindada: " + energia;
+    }  
 }

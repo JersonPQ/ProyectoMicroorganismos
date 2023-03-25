@@ -1,17 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 public class Interface {
     private JFrame ventana;
     private Mapa miMapa = new Mapa();;
     private ImageIcon imagen;
-    private Object objetoComparando;
-    private OrganismoJugador organismoJugadorComparar;
-    private OrganismoVelocidad organismoVelocidadComparar;
-    private OrganismoVision organismoVisionComparar;
+    private String informacion;
 
 
     public Interface(){
@@ -34,9 +32,7 @@ public class Interface {
         mapaPanel.setLayout(new GridLayout(50, 50));
 
         //Inicializar objetos a Comparar
-        organismoJugadorComparar = new OrganismoJugador();
-        organismoVelocidadComparar = new OrganismoVelocidad();
-        organismoVisionComparar = new OrganismoVision();
+
 
         //Ingresando los animales
         Casilla[][] dimensionMatriz = miMapa.getDimension();
@@ -49,15 +45,17 @@ public class Interface {
             for(Casilla elemento: array){
                 (elemento.boton).setPreferredSize(new Dimension(40, 40));
                 if(elemento.getObjeto() != null){
-                    objetoComparando = elemento.getObjeto().getClass();
                     // comparar si la clase objetoComparando es algún tipo de organismo
-                    if (objetoComparando == organismoJugadorComparar.getClass() || objetoComparando == organismoVelocidadComparar.getClass() || objetoComparando == organismoVisionComparar.getClass()){
-                        imagen = ((Organismo) elemento.getObjeto()).setImagen();
+                    imagen = ((NPC) elemento.getObjeto()).setImagen();
+                    (elemento.boton).addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            informacion = ((NPC) elemento.getObjeto()).getInformacion();
                         
-                    } else {
-                        imagen = ((Alimento) elemento.getObjeto()).setImagen();
-                    }
-
+                            JOptionPane.showMessageDialog(null, informacion);
+                            ventana.requestFocus();
+                        }
+                    });
                     (elemento.boton).setIcon(new ImageIcon(imagen.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));   
                 }
                 mapaPanel.add(elemento.boton);
@@ -75,6 +73,7 @@ public class Interface {
             //Obteniendo el org jugador para poder moverlo con las teclas
             Organismo orgJugador = miMapa.getOrganismos()[0];
             ImageIcon imagenJugador = orgJugador.setImagen();
+            String infoOrgJugador = orgJugador.getInformacion();
 
             //Obtenes la posicion del jugador
             int posJugadorX = orgJugador.getPosicion()[0];
@@ -101,6 +100,13 @@ public class Interface {
                     siguiCasilla.setObjeto(orgJugador);
                     siguiCasilla.boton.setIcon(new ImageIcon(imagenJugador.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
                     orgJugador.setPosition(posJugadorX-1, posJugadorY);
+                    siguiCasilla.boton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            JOptionPane.showMessageDialog(null, infoOrgJugador);
+                            ventana.requestFocus();
+                        }
+                    });
                 }
             }
             else if(codigo == 'a' || codigo == 'A'){
@@ -118,6 +124,13 @@ public class Interface {
                     siguiCasilla.setObjeto(orgJugador);
                     siguiCasilla.boton.setIcon(new ImageIcon(imagenJugador.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
                     orgJugador.setPosition(posJugadorX, posJugadorY-1);
+                    siguiCasilla.boton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            JOptionPane.showMessageDialog(null, infoOrgJugador);
+                            ventana.requestFocus();
+                        }
+                    });
                 }
             }
             else if(codigo == 's' || codigo == 'S'){
@@ -135,6 +148,13 @@ public class Interface {
                     siguiCasilla.setObjeto(orgJugador);
                     siguiCasilla.boton.setIcon(new ImageIcon(imagenJugador.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
                     orgJugador.setPosition(posJugadorX+1, posJugadorY);
+                    siguiCasilla.boton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            JOptionPane.showMessageDialog(null, infoOrgJugador);
+                            ventana.requestFocus();
+                        }
+                    });
                 }
             }
             else if(codigo == 'd' || codigo == 'D'){
@@ -152,6 +172,13 @@ public class Interface {
                     siguiCasilla.setObjeto(orgJugador);
                     siguiCasilla.boton.setIcon(new ImageIcon(imagenJugador.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
                     orgJugador.setPosition(posJugadorX, posJugadorY+1);
+                    siguiCasilla.boton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            JOptionPane.showMessageDialog(null, infoOrgJugador);
+                            ventana.requestFocus();
+                        }
+                    });
                 }
             }
         }

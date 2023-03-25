@@ -63,4 +63,12 @@ public class OrganismoVelocidad extends Organismo{
         ImageIcon imagen = new ImageIcon("images/tortuga-marina.png");
         return imagen;
     }
+
+    public String getInformacion(){
+        return "Organismo Velocidad\n" + 
+        "\tEnergia: " + energia + "\n" + 
+        "\tVision: " + vision + "\n" + 
+        "\tVelocidad: " + velocidad + "\n" +
+        "\tEdad: " + edad;
+    }  
 }

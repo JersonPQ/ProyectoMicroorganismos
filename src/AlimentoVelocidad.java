@@ -11,4 +11,9 @@ public class AlimentoVelocidad extends Alimento{
         ImageIcon imagen = new ImageIcon("images/limon.png");
         return imagen;
     }
+
+    public String getInformacion(){
+        return "Alimento Velocidad\n" + 
+        "\tVelocidad brindada: " + velocidad;
+    }
 }

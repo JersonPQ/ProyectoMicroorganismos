@@ -11,4 +11,9 @@ public class AlimentoVision extends Alimento{
         ImageIcon imagen = new ImageIcon("images/manzana.png");
         return imagen;
     }
+
+    public String getInformacion(){
+        return "Alimento Visión\n" + 
+        "\tVisión brindada: " + vision;
+    }
 }

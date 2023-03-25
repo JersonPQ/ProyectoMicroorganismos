@@ -65,4 +65,11 @@ public class OrganismoVision extends Organismo{
         return imagen;
     }
 
+    public String getInformacion(){
+        return "Organismo Vision\n" + 
+        "\tEnergia: " + energia + "\n" + 
+        "\tVision: " + vision + "\n" + 
+        "\tVelocidad: " + velocidad + "\n" +
+        "\tEdad: " + edad;
+    }  
 }

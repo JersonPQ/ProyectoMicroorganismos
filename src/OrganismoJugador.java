@@ -18,6 +18,14 @@ public class OrganismoJugador extends Organismo{
         return this.pos;
     }
 
+    public String getInformacion(){
+        return "Organismo Jugador\n" + 
+        "\tEnergia: " + energia + "\n" + 
+        "\tVision: " + vision + "\n" + 
+        "\tVelocidad: " + velocidad + "\n" +
+        "\tEdad: " + edad;
+    }   
+
     public void moverse() {
         /* CODE */
     }
