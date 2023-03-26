@@ -4,7 +4,8 @@ public class OrganismoJugador extends Organismo{
     public OrganismoJugador(){
         energia = 1;
         vision = 1;
-        velocidad = 1;
+        // PRUEBA
+        velocidad = 3;
         edad = 1;
     }
 
@@ -14,6 +15,7 @@ public class OrganismoJugador extends Organismo{
             // en caso de que el random tome boolean 0 quiere decir que el aleatorio no favoreció al OrganismoJugador
             if (!ganadorAleatorio) {
                 /* Jugador pierde */
+                System.out.println("Jugador Pierde");
             } else {
                 this.energia += (organismoAComer.energia) / 2;
                 this.vision += (organismoAComer.vision) / 2;
@@ -25,6 +27,7 @@ public class OrganismoJugador extends Organismo{
             this.velocidad += (organismoAComer.velocidad) / 2;
         } else {
             /* Jugador pierde */
+            System.out.println("Jugador Pierde");
         }
     }
 
@@ -33,7 +36,7 @@ public class OrganismoJugador extends Organismo{
     }
 
     public void atacar(AlimentoVision alimentoVision){
-        this.velocidad += alimentoVision.getAtributo();
+        this.vision += alimentoVision.getAtributo();
     }
 
     public void atacar(AlimentoVelocidad alimentoVelocidad){

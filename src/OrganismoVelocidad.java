@@ -3,9 +3,10 @@ import javax.swing.ImageIcon;
 public class OrganismoVelocidad extends Organismo{
 
     public OrganismoVelocidad(){
-        energia = 1;
-        vision = 1;
-        velocidad = 1;
+        energia = 2;
+        // PRUEBA
+        vision = 3;
+        velocidad = 4;
         edad = 1;
     }
 

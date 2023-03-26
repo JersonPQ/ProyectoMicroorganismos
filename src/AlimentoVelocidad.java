@@ -3,6 +3,10 @@ import javax.swing.ImageIcon;
 public class AlimentoVelocidad extends Alimento{
     private int velocidad;
 
+    public AlimentoVelocidad(){
+        velocidad = 1;
+    }
+
     public int getAtributo() {
         return velocidad;
     }

@@ -3,6 +3,10 @@ import javax.swing.ImageIcon;
 public class AlimentoEnergia extends Alimento{
     private int energia;
 
+    public AlimentoEnergia(){
+        energia = 1;
+    }
+
     public int getAtributo() {
         return energia;
     }

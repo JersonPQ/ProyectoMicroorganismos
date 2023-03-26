@@ -11,11 +11,7 @@ public class Interface {
     private ImageIcon imagen;
     private String informacion;
 
-    private Organismo[] organismos;
-    private int[] indiceEncontrado;
-    private int[] posicionOrganismo;
-
-    public Interface(){
+    public Interface() throws InterruptedException{
         ventana = new JFrame();
         ventana.setTitle("Proyecto POO | Darío y Jerson");
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -70,20 +66,11 @@ public class Interface {
         ventana.add(mapaPanel);
     }
 
-    public void simular(){
-        organismos = miMapa.getOrganismos();
-        for (int i = 1; i < organismos.length; ++i){
-            if (organismos[i] instanceof OrganismoVelocidad){
-                posicionOrganismo = organismos[i].getPosicion();
-                System.out.println("Organismo velocidad en la posicion (" + posicionOrganismo[0] + ", " + posicionOrganismo[1] + ")");
-                indiceEncontrado = miMapa.busqueda((OrganismoVelocidad) organismos[i]);
-                System.out.println(indiceEncontrado[0] + ", " + indiceEncontrado[1]);
-            } else if (organismos[i] instanceof OrganismoVision) {
-                posicionOrganismo = organismos[i].getPosicion();
-                System.out.println("Organismo vision en la posicion (" + posicionOrganismo[0] + ", " + posicionOrganismo[1] + ")");
-                indiceEncontrado = miMapa.busqueda((OrganismoVision) organismos[i]);
-                System.out.println(indiceEncontrado[0] + ", " + indiceEncontrado[1]);
-            }
+    public void simular() throws InterruptedException{
+        Organismo[] organismos = miMapa.getOrganismos();
+        for (int i = 0; i < organismos.length; ++i){
+            miMapa.moverse(organismos[i]);
+//            Thread.sleep(2000);
         }
     }
 
@@ -114,7 +101,23 @@ public class Interface {
                     JOptionPane.showMessageDialog(null, "No se puede mover para esa dirección");
                 }
                 else{
-                    Casilla siguiCasilla = mapaDimension[posJugadorX-1][posJugadorY];       
+                    Casilla siguiCasilla = mapaDimension[posJugadorX-1][posJugadorY];
+                    if (siguiCasilla.getObjeto() != null){
+                        if (siguiCasilla.getObjeto() instanceof Organismo){
+                            Organismo organismoAAtacar = (Organismo) siguiCasilla.getObjeto();
+                            orgJugador.atacar(organismoAAtacar);
+                        } else if (siguiCasilla.getObjeto() instanceof AlimentoEnergia) {
+                            AlimentoEnergia alimentoAComer = (AlimentoEnergia) siguiCasilla.getObjeto();
+                            orgJugador.atacar(alimentoAComer);
+                        } else if (siguiCasilla.getObjeto() instanceof AlimentoVelocidad) {
+                            AlimentoVelocidad alimentoAComer = (AlimentoVelocidad) siguiCasilla.getObjeto();
+                            orgJugador.atacar(alimentoAComer);
+                        } else if (siguiCasilla.getObjeto() instanceof AlimentoVision) {
+                            AlimentoVision alimentoAComer = (AlimentoVision) siguiCasilla.getObjeto();
+                            orgJugador.atacar(alimentoAComer);
+                        }
+                    }
+
                     casillaJugador.boton.setIcon(null); //Le quitamos la imagen
                     casillaJugador.setObjeto(); //Le quitamos el objeto y lo desabilitamos
 
@@ -138,7 +141,23 @@ public class Interface {
                     JOptionPane.showMessageDialog(null, "No se puede mover para esa dirección");
                 }
                 else{
-                    Casilla siguiCasilla = mapaDimension[posJugadorX][posJugadorY-1];       
+                    Casilla siguiCasilla = mapaDimension[posJugadorX][posJugadorY-1];
+                    if (siguiCasilla.getObjeto() != null){
+                        if (siguiCasilla.getObjeto() instanceof Organismo){
+                            Organismo organismoAAtacar = (Organismo) siguiCasilla.getObjeto();
+                            orgJugador.atacar(organismoAAtacar);
+                        } else if (siguiCasilla.getObjeto() instanceof AlimentoEnergia) {
+                            AlimentoEnergia alimentoAComer = (AlimentoEnergia) siguiCasilla.getObjeto();
+                            orgJugador.atacar(alimentoAComer);
+                        } else if (siguiCasilla.getObjeto() instanceof AlimentoVelocidad) {
+                            AlimentoVelocidad alimentoAComer = (AlimentoVelocidad) siguiCasilla.getObjeto();
+                            orgJugador.atacar(alimentoAComer);
+                        } else if (siguiCasilla.getObjeto() instanceof AlimentoVision) {
+                            AlimentoVision alimentoAComer = (AlimentoVision) siguiCasilla.getObjeto();
+                            orgJugador.atacar(alimentoAComer);
+                        }
+                    }
+
                     casillaJugador.boton.setIcon(null); //Le quitamos la imagen
                     casillaJugador.setObjeto(); //Le quitamos el objeto y lo desabilitamos
 
@@ -162,7 +181,23 @@ public class Interface {
                     JOptionPane.showMessageDialog(null, "No se puede mover para esa dirección");
                 }
                 else{
-                    Casilla siguiCasilla = mapaDimension[posJugadorX+1][posJugadorY];       
+                    Casilla siguiCasilla = mapaDimension[posJugadorX+1][posJugadorY];
+                    if (siguiCasilla.getObjeto() != null){
+                        if (siguiCasilla.getObjeto() instanceof Organismo){
+                            Organismo organismoAAtacar = (Organismo) siguiCasilla.getObjeto();
+                            orgJugador.atacar(organismoAAtacar);
+                        } else if (siguiCasilla.getObjeto() instanceof AlimentoEnergia) {
+                            AlimentoEnergia alimentoAComer = (AlimentoEnergia) siguiCasilla.getObjeto();
+                            orgJugador.atacar(alimentoAComer);
+                        } else if (siguiCasilla.getObjeto() instanceof AlimentoVelocidad) {
+                            AlimentoVelocidad alimentoAComer = (AlimentoVelocidad) siguiCasilla.getObjeto();
+                            orgJugador.atacar(alimentoAComer);
+                        } else if (siguiCasilla.getObjeto() instanceof AlimentoVision) {
+                            AlimentoVision alimentoAComer = (AlimentoVision) siguiCasilla.getObjeto();
+                            orgJugador.atacar(alimentoAComer);
+                        }
+                    }
+
                     casillaJugador.boton.setIcon(null); //Le quitamos la imagen
                     casillaJugador.setObjeto(); //Le quitamos el objeto y lo desabilitamos
 
@@ -186,7 +221,23 @@ public class Interface {
                     JOptionPane.showMessageDialog(null, "No se puede mover para esa dirección");
                 }
                 else{
-                    Casilla siguiCasilla = mapaDimension[posJugadorX][posJugadorY+1];       
+                    Casilla siguiCasilla = mapaDimension[posJugadorX][posJugadorY+1];
+                    if (siguiCasilla.getObjeto() != null){
+                        if (siguiCasilla.getObjeto() instanceof Organismo){
+                            Organismo organismoAAtacar = (Organismo) siguiCasilla.getObjeto();
+                            orgJugador.atacar(organismoAAtacar);
+                        } else if (siguiCasilla.getObjeto() instanceof AlimentoEnergia) {
+                            AlimentoEnergia alimentoAComer = (AlimentoEnergia) siguiCasilla.getObjeto();
+                            orgJugador.atacar(alimentoAComer);
+                        } else if (siguiCasilla.getObjeto() instanceof AlimentoVelocidad) {
+                            AlimentoVelocidad alimentoAComer = (AlimentoVelocidad) siguiCasilla.getObjeto();
+                            orgJugador.atacar(alimentoAComer);
+                        } else if (siguiCasilla.getObjeto() instanceof AlimentoVision) {
+                            AlimentoVision alimentoAComer = (AlimentoVision) siguiCasilla.getObjeto();
+                            orgJugador.atacar(alimentoAComer);
+                        }
+                    }
+
                     casillaJugador.boton.setIcon(null); //Le quitamos la imagen
                     casillaJugador.setObjeto(); //Le quitamos el objeto y lo desabilitamos
 

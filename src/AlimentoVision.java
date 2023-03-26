@@ -3,6 +3,10 @@ import javax.swing.ImageIcon;
 public class AlimentoVision extends Alimento{
     private int vision;
 
+    public AlimentoVision(){
+        vision = 1;
+    }
+
     public int getAtributo() {
         return vision;
     }
