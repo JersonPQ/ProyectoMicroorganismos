@@ -67,10 +67,41 @@ public class Interface {
     }
 
     public void simular() throws InterruptedException{
+        Casilla[][] matriz = miMapa.getDimension();
+        Casilla casillaOrganismo;
+        int[] posicionOrganismo;
         Organismo[] organismos = miMapa.getOrganismos();
-        for (int i = 0; i < organismos.length; ++i){
-            miMapa.moverse(organismos[i]);
-//            Thread.sleep(2000);
+        int contadorTurno = 0, contadorPasos;
+        while (contadorTurno < organismos.length) {
+            if (organismos[contadorTurno] instanceof OrganismoJugador){
+                // turno de organismoJugador
+                System.out.println("Turno de jugador");
+            } else {
+                contadorPasos = 0;
+                Organismo organismoAMoverse = organismos[contadorTurno];
+                while (contadorPasos < organismos[contadorTurno].velocidad) {
+                    miMapa.moverse(organismoAMoverse);
+                    String infoOrgJugador = organismoAMoverse.getInformacion();
+                    posicionOrganismo = organismoAMoverse.getPosicion();
+                    casillaOrganismo = matriz[posicionOrganismo[0]][posicionOrganismo[1]];
+
+                    casillaOrganismo.boton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            JOptionPane.showMessageDialog(null, infoOrgJugador);
+                            ventana.requestFocus();
+                        }
+                    });
+                    Thread.sleep(1000);
+                    ++contadorPasos;
+                }
+
+            }
+
+            ++contadorTurno;
+            if (contadorTurno >= organismos.length){
+                contadorTurno = 0;
+            }
         }
     }
 
