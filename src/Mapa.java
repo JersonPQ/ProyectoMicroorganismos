@@ -16,11 +16,14 @@ public class Mapa {
     private int filaInicial, filaFinal, columnaInicial, columnaFinal, contBusqueda;
     private double distanciaPuntos;
     private Random rnd;
+    private int contadorOrganismos, contadorAlimentos;
 
     public Mapa(){
         matriz = new Casilla[50][50];
         alimentos = new Alimento[10];
         organismos = new Organismo[10];
+        contadorOrganismos = 1;
+        contadorAlimentos = 0;
 
         //Inicializando cada Casilla en la matriz
         for (int i = 0; i < 50; i++){
@@ -32,28 +35,13 @@ public class Mapa {
 
         //Inicializando los organismos
         organismos[0] = new OrganismoJugador();
-        for(int i = 1; i < 10; i++){
-            valorAleatorio = Math.random()*(1-0)+0;
-            if(valorAleatorio < 0.5){
-                organismos[i] = new OrganismoVelocidad();
-            }
-            else{
-                organismos[i] = new OrganismoVision();
-            }
+        while (contadorOrganismos < organismos.length){
+            crearOrganismo();
         }
 
         //Inicializando los alimentos
-        for(int i = 0; i < 10; i++){
-            valorAleatorio = Math.random()*(1-0)+0;
-            if(valorAleatorio < 0.3){
-                alimentos[i] = new AlimentoEnergia();
-            }
-            else if(0.3 < valorAleatorio && valorAleatorio < 0.6){
-                alimentos[i] = new AlimentoVision();
-            }
-            else{
-                alimentos[i] = new AlimentoVelocidad();
-            }
+        while (contadorAlimentos < alimentos.length){
+            crearAlimento();
         }
 
         //Colocando los organismos aleatoriamente
@@ -79,6 +67,41 @@ public class Mapa {
                 }
                 }while(matriz[posX][posY].getObjeto() == null);
         }
+    }
+
+    public void crearOrganismo(){
+        valorAleatorio = Math.random()*(1-0)+0;
+        if(valorAleatorio < 0.5){
+            organismos[contadorOrganismos] = new OrganismoVelocidad();
+        }
+        else{
+            organismos[contadorOrganismos] = new OrganismoVision();
+        }
+
+        ++contadorOrganismos;
+    }
+
+    public void eliminarOrganismo(){
+        /* CODE */
+    }
+
+    public void crearAlimento(){
+        valorAleatorio = Math.random()*(1-0)+0;
+        if(valorAleatorio < 0.3){
+            alimentos[contadorAlimentos] = new AlimentoEnergia();
+        }
+        else if(0.3 < valorAleatorio && valorAleatorio < 0.6){
+            alimentos[contadorAlimentos] = new AlimentoVision();
+        }
+        else{
+            alimentos[contadorAlimentos] = new AlimentoVelocidad();
+        }
+
+        ++contadorAlimentos;
+    }
+
+    public void eliminarAlimento(){
+        /* CODE */
     }
 
     public void moverse(Organismo o){
