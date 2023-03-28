@@ -12,10 +12,11 @@ public abstract class Organismo implements NPC{
     protected boolean ganadorAleatorio;
 
     public abstract void setPosition(int i, int j);
-    public abstract void atacar(Organismo organismoAComer);
+    public abstract boolean atacar(Organismo organismoAComer);
     public abstract void atacar(AlimentoEnergia alimentoEnergia);
     public abstract void atacar(AlimentoVelocidad alimentoVelocidad);
     public abstract void atacar(AlimentoVision alimentoVision);
+    public abstract boolean comprobarAtaque(Organismo organismoAComer);
     public abstract ImageIcon setImagen();
     public abstract int[] getPosicion();
     public abstract String getInformacion();

@@ -2,32 +2,45 @@ import javax.swing.ImageIcon;
 
 public class OrganismoJugador extends Organismo{
     public OrganismoJugador(){
-        energia = 1;
+        energia = 5;
         vision = 1;
         // PRUEBA
-        velocidad = 3;
+        velocidad = 10;
         edad = 1;
     }
 
-    public void atacar(Organismo organismoAComer) {
+    public boolean atacar(Organismo organismoAComer) {
         if (energia == organismoAComer.energia && velocidad == organismoAComer.velocidad && edad == organismoAComer.edad){
             ganadorAleatorio = rnd.nextBoolean();
             // en caso de que el random tome boolean 0 quiere decir que el aleatorio no favoreció al OrganismoJugador
             if (!ganadorAleatorio) {
                 /* Jugador pierde */
                 System.out.println("Jugador Pierde");
+                return false;
             } else {
                 this.energia += (organismoAComer.energia) / 2;
                 this.vision += (organismoAComer.vision) / 2;
                 this.velocidad += (organismoAComer.velocidad) / 2;
+                return true;
             }
-        } else if (energia > organismoAComer.energia || (energia == organismoAComer.energia && velocidad > organismoAComer.velocidad) || (energia == organismoAComer.energia && velocidad == organismoAComer.velocidad && edad > organismoAComer.edad)) {
+        } else if (comprobarAtaque(organismoAComer)) {
             this.energia += (organismoAComer.energia) / 2;
             this.vision += (organismoAComer.vision) / 2;
             this.velocidad += (organismoAComer.velocidad) / 2;
+            return true;
         } else {
             /* Jugador pierde */
             System.out.println("Jugador Pierde");
+            return false;
+        }
+    }
+
+    public boolean comprobarAtaque(Organismo organismoAComer){
+        // evalua si organismo puede comer a organismoAComer
+        if (energia > organismoAComer.energia || (energia == organismoAComer.energia && velocidad > organismoAComer.velocidad) || (energia == organismoAComer.energia && velocidad == organismoAComer.velocidad && edad > organismoAComer.edad)) {
+            return true;
+        } else {
+            return false;
         }
     }
 

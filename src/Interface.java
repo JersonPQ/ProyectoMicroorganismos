@@ -8,15 +8,15 @@ import java.awt.event.KeyEvent;
 public class Interface {
     private JFrame ventana;
     private Mapa miMapa = new Mapa();
+    OyenteTeclado oyente;
     private ImageIcon imagen;
     private String informacion;
-
+    private int contadorPasos;
     public Interface() throws InterruptedException{
         ventana = new JFrame();
         ventana.setTitle("Proyecto POO | Darío y Jerson");
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        OyenteTeclado oyente = new OyenteTeclado();
-        ventana.addKeyListener(oyente);
+        oyente = new OyenteTeclado();
 
         addComponentes();
 
@@ -71,13 +71,19 @@ public class Interface {
         Casilla casillaOrganismo;
         int[] posicionOrganismo;
         Organismo[] organismos = miMapa.getOrganismos();
-        int contadorTurno = 0, contadorPasos;
-        while (contadorTurno < organismos.length) {
+        int contadorTurno = 0;
+        while (true) {
+            contadorPasos = 0;
             if (organismos[contadorTurno] instanceof OrganismoJugador){
+                ventana.addKeyListener(oyente);
                 // turno de organismoJugador
                 System.out.println("Turno de jugador");
+                while (contadorPasos < organismos[contadorTurno].velocidad){
+                    Thread.currentThread().sleep(5);
+                }
+
+                ventana.removeKeyListener(oyente);
             } else {
-                contadorPasos = 0;
                 Organismo organismoAMoverse = organismos[contadorTurno];
                 while (contadorPasos < organismos[contadorTurno].velocidad) {
                     miMapa.moverse(organismoAMoverse);
@@ -109,7 +115,6 @@ public class Interface {
     class OyenteTeclado extends KeyAdapter{
             //Inicializamos los eventos
             public void keyTyped(KeyEvent e){
-                
             //Obteniendo el org jugador para poder moverlo con las teclas
             Organismo orgJugador = miMapa.getOrganismos()[0];
             ImageIcon imagenJugador = orgJugador.setImagen();
@@ -123,7 +128,7 @@ public class Interface {
             Casilla[][] mapaDimension = miMapa.getDimension();
             Casilla casillaJugador = mapaDimension[posJugadorX][posJugadorY];
             char codigo = e.getKeyChar();
-            
+
             //Programar para que el jugador se mueva
             if(codigo == 'w' || codigo == 'W'){
                 //En este if la casilla se moverá para arriba
@@ -136,16 +141,22 @@ public class Interface {
                     if (siguiCasilla.getObjeto() != null){
                         if (siguiCasilla.getObjeto() instanceof Organismo){
                             Organismo organismoAAtacar = (Organismo) siguiCasilla.getObjeto();
-                            orgJugador.atacar(organismoAAtacar);
+                            if (orgJugador.atacar(organismoAAtacar)){
+                                miMapa.eliminarOrganismo(organismoAAtacar);
+                            }
+
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoEnergia) {
                             AlimentoEnergia alimentoAComer = (AlimentoEnergia) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
+                            miMapa.eliminarAlimento(alimentoAComer);
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVelocidad) {
                             AlimentoVelocidad alimentoAComer = (AlimentoVelocidad) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
+                            miMapa.eliminarAlimento(alimentoAComer);
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVision) {
                             AlimentoVision alimentoAComer = (AlimentoVision) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
+                            miMapa.eliminarAlimento(alimentoAComer);
                         }
                     }
 
@@ -163,6 +174,8 @@ public class Interface {
                             ventana.requestFocus();
                         }
                     });
+
+                    ++contadorPasos;
                 }
             }
             else if(codigo == 'a' || codigo == 'A'){
@@ -177,15 +190,22 @@ public class Interface {
                         if (siguiCasilla.getObjeto() instanceof Organismo){
                             Organismo organismoAAtacar = (Organismo) siguiCasilla.getObjeto();
                             orgJugador.atacar(organismoAAtacar);
+                            if (orgJugador.atacar(organismoAAtacar)){
+                                miMapa.eliminarOrganismo(organismoAAtacar);
+                            }
+
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoEnergia) {
                             AlimentoEnergia alimentoAComer = (AlimentoEnergia) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
+                            miMapa.eliminarAlimento(alimentoAComer);
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVelocidad) {
                             AlimentoVelocidad alimentoAComer = (AlimentoVelocidad) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
+                            miMapa.eliminarAlimento(alimentoAComer);
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVision) {
                             AlimentoVision alimentoAComer = (AlimentoVision) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
+                            miMapa.eliminarAlimento(alimentoAComer);
                         }
                     }
 
@@ -203,6 +223,8 @@ public class Interface {
                             ventana.requestFocus();
                         }
                     });
+
+                    ++contadorPasos;
                 }
             }
             else if(codigo == 's' || codigo == 'S'){
@@ -217,15 +239,22 @@ public class Interface {
                         if (siguiCasilla.getObjeto() instanceof Organismo){
                             Organismo organismoAAtacar = (Organismo) siguiCasilla.getObjeto();
                             orgJugador.atacar(organismoAAtacar);
+                            if (orgJugador.atacar(organismoAAtacar)){
+                                miMapa.eliminarOrganismo(organismoAAtacar);
+                            }
+
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoEnergia) {
                             AlimentoEnergia alimentoAComer = (AlimentoEnergia) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
+                            miMapa.eliminarAlimento(alimentoAComer);
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVelocidad) {
                             AlimentoVelocidad alimentoAComer = (AlimentoVelocidad) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
+                            miMapa.eliminarAlimento(alimentoAComer);
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVision) {
                             AlimentoVision alimentoAComer = (AlimentoVision) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
+                            miMapa.eliminarAlimento(alimentoAComer);
                         }
                     }
 
@@ -243,6 +272,8 @@ public class Interface {
                             ventana.requestFocus();
                         }
                     });
+
+                    ++contadorPasos;
                 }
             }
             else if(codigo == 'd' || codigo == 'D'){
@@ -257,15 +288,22 @@ public class Interface {
                         if (siguiCasilla.getObjeto() instanceof Organismo){
                             Organismo organismoAAtacar = (Organismo) siguiCasilla.getObjeto();
                             orgJugador.atacar(organismoAAtacar);
+                            if (orgJugador.atacar(organismoAAtacar)){
+                                miMapa.eliminarOrganismo(organismoAAtacar);
+                            }
+
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoEnergia) {
                             AlimentoEnergia alimentoAComer = (AlimentoEnergia) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
+                            miMapa.eliminarAlimento(alimentoAComer);
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVelocidad) {
                             AlimentoVelocidad alimentoAComer = (AlimentoVelocidad) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
+                            miMapa.eliminarAlimento(alimentoAComer);
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVision) {
                             AlimentoVision alimentoAComer = (AlimentoVision) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
+                            miMapa.eliminarAlimento(alimentoAComer);
                         }
                     }
 
@@ -283,6 +321,8 @@ public class Interface {
                             ventana.requestFocus();
                         }
                     });
+
+                    ++contadorPasos;
                 }
             }
         }

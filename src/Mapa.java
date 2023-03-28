@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.Random;
 
 public class Mapa {
@@ -16,14 +17,13 @@ public class Mapa {
     private int filaInicial, filaFinal, columnaInicial, columnaFinal, contBusqueda;
     private double distanciaPuntos;
     private Random rnd;
-    private int contadorOrganismos, contadorAlimentos;
+    private int contadorOrganismos;
 
     public Mapa(){
         matriz = new Casilla[50][50];
-        alimentos = new Alimento[10];
+        alimentos = new Alimento[20];
         organismos = new Organismo[10];
         contadorOrganismos = 1;
-        contadorAlimentos = 0;
 
         //Inicializando cada Casilla en la matriz
         for (int i = 0; i < 50; i++){
@@ -33,40 +33,30 @@ public class Mapa {
             }
         }
 
-        //Inicializando los organismos
+        // incializar y colocar organismoJugador
         organismos[0] = new OrganismoJugador();
+        while (true) {
+            posX = (int)(Math.floor(Math.random()*49+0));
+            posY = (int)(Math.floor(Math.random()*49+0));
+            if(matriz[posX][posY].getObjeto() == null){
+                matriz[posX][posY].setObjeto(organismos[0]);
+                organismos[0].setPosition(posX, posY);
+                break;
+            }
+        }
+
+
+        //Inicializando los organismos
         while (contadorOrganismos < organismos.length){
             crearOrganismo();
         }
 
         //Inicializando los alimentos
-        while (contadorAlimentos < alimentos.length){
-            crearAlimento();
-        }
-
-        //Colocando los organismos aleatoriamente
-        for(Organismo org: organismos){
-            do{
-                posX = (int)(Math.floor(Math.random()*49+0));
-                posY = (int)(Math.floor(Math.random()*49+0));
-                if(matriz[posX][posY].getObjeto() == null){
-                    matriz[posX][posY].setObjeto(org);
-                    org.setPosition(posX, posY);
-                }
-                }while(matriz[posX][posY].getObjeto() == null);
+        for (int i = 0; i < alimentos.length; i++) {
+            crearAlimento(i);
         }
 
         System.out.println(organismos[0].getPosicion()[0] + " - " + organismos[0].getPosicion()[1]);
-        //Colocando los alimentos aleatoriamente
-        for(Alimento alimen: alimentos){
-            do{
-                posX = (int)(Math.floor(Math.random()*49+0));
-                posY = (int)(Math.floor(Math.random()*49+0));
-                if(matriz[posX][posY].getObjeto() == null){
-                    matriz[posX][posY].setObjeto(alimen);
-                }
-                }while(matriz[posX][posY].getObjeto() == null);
-        }
     }
 
     public void crearOrganismo(){
@@ -78,30 +68,54 @@ public class Mapa {
             organismos[contadorOrganismos] = new OrganismoVision();
         }
 
+        while (true){
+            posX = (int)(Math.floor(Math.random()*49+0));
+            posY = (int)(Math.floor(Math.random()*49+0));
+            if(matriz[posX][posY].getObjeto() == null){
+                matriz[posX][posY].setObjeto(organismos[contadorOrganismos]);
+                organismos[contadorOrganismos].setPosition(posX, posY);
+                break;
+            }
+        }
+
         ++contadorOrganismos;
     }
 
-    public void eliminarOrganismo(){
-        /* CODE */
+    public void eliminarOrganismo(Organismo organismoEliminar){
+        int indiceOrganismo = Arrays.asList(organismos).indexOf(organismoEliminar);
+        for (int i = indiceOrganismo; i < organismos.length - 1; i++) {
+            organismos[i] = organismos[i + 1];
+        }
+
+        --contadorOrganismos;
+        crearOrganismo();
     }
 
-    public void crearAlimento(){
+    public void crearAlimento(int indiceAlimento){
         valorAleatorio = Math.random()*(1-0)+0;
         if(valorAleatorio < 0.3){
-            alimentos[contadorAlimentos] = new AlimentoEnergia();
+            alimentos[indiceAlimento] = new AlimentoEnergia();
         }
         else if(0.3 < valorAleatorio && valorAleatorio < 0.6){
-            alimentos[contadorAlimentos] = new AlimentoVision();
+            alimentos[indiceAlimento] = new AlimentoVision();
         }
         else{
-            alimentos[contadorAlimentos] = new AlimentoVelocidad();
+            alimentos[indiceAlimento] = new AlimentoVelocidad();
         }
 
-        ++contadorAlimentos;
+        while (true){
+            posX = (int)(Math.floor(Math.random()*49+0));
+            posY = (int)(Math.floor(Math.random()*49+0));
+            if(matriz[posX][posY].getObjeto() == null){
+                matriz[posX][posY].setObjeto(alimentos[indiceAlimento]);
+                break;
+            }
+        }
     }
 
-    public void eliminarAlimento(){
-        /* CODE */
+    public void eliminarAlimento(Alimento alimentoEliminar){
+        int indiceAlimento = Arrays.asList(alimentos).indexOf(alimentoEliminar);
+        crearAlimento(indiceAlimento);
     }
 
     public void moverse(Organismo o){
@@ -113,6 +127,7 @@ public class Mapa {
         int siguiCasillaY = posicionOrganismo[1];
         double distanciaMoverVert, distanciaMoverHoriz;
         boolean moverAleatorio, sumarORestarIndice;
+        boolean huir = false;
         int[] siguienteMovimiento = new int[2];
         rnd = new Random();
         if (o instanceof OrganismoVelocidad) {
@@ -130,41 +145,70 @@ public class Mapa {
         casillaObjetoEncontrado = matriz[indiceEncontrado[0]][indiceEncontrado[1]];
         // casilla donde esta el organismo
         casillaJugador = matriz[posicionOrganismo[0]][posicionOrganismo[1]];
-        // hacer algoritmo para moverse
+        // si el indice encontrado es igual al del organismo este se mueve aleatoriamente
         if (posicionOrganismo[0] == indiceEncontrado[0] && posicionOrganismo[1] == indiceEncontrado[1]){
-            // si moverAleatorio es true mueve horizontalmente
-            moverAleatorio = rnd.nextBoolean();
-            // si sumarORestarIndice es true le suma uno al indice correspondiente
-            sumarORestarIndice = rnd.nextBoolean();
-            if (moverAleatorio && sumarORestarIndice){
-                siguienteMovimiento[0] = posicionOrganismo[0];
-                siguienteMovimiento[1] = posicionOrganismo[1] + 1;
-            } else if (moverAleatorio && !sumarORestarIndice) {
-                siguienteMovimiento[0] = posicionOrganismo[0];
-                siguienteMovimiento[1] = posicionOrganismo[1] - 1;
-            } else if (!moverAleatorio && sumarORestarIndice) {
-                siguienteMovimiento[0] = posicionOrganismo[0] + 1;
-                siguienteMovimiento[1] = posicionOrganismo[1];
-            } else {
-                siguienteMovimiento[0] = posicionOrganismo[0] - 1;
-                siguienteMovimiento[1] = posicionOrganismo[1];
+            while (true){
+                // si moverAleatorio es true mueve horizontalmente
+                moverAleatorio = rnd.nextBoolean();
+                // si sumarORestarIndice es true le suma uno al indice correspondiente
+                sumarORestarIndice = rnd.nextBoolean();
+                if (moverAleatorio && sumarORestarIndice){
+                    siguienteMovimiento[0] = posicionOrganismo[0];
+                    siguienteMovimiento[1] = posicionOrganismo[1] + 1;
+                } else if (moverAleatorio && !sumarORestarIndice) {
+                    siguienteMovimiento[0] = posicionOrganismo[0];
+                    siguienteMovimiento[1] = posicionOrganismo[1] - 1;
+                } else if (!moverAleatorio && sumarORestarIndice) {
+                    siguienteMovimiento[0] = posicionOrganismo[0] + 1;
+                    siguienteMovimiento[1] = posicionOrganismo[1];
+                } else {
+                    siguienteMovimiento[0] = posicionOrganismo[0] - 1;
+                    siguienteMovimiento[1] = posicionOrganismo[1];
+                }
+
+                // evalua si indices estan dentro de la matriz
+                if (0 <= siguienteMovimiento[0] && siguienteMovimiento[0] < matriz.length && 0 <= siguienteMovimiento[1] && siguienteMovimiento[1] < matriz[0].length){
+                    break;
+                }
             }
         } else {
-            // Comparar si los indices de indiceEncontrado es mayor o menor al de los indices del Organismo
-            if (casillaObjetoEncontrado.getObjeto() instanceof Alimento && posicionOrganismo[0] < indiceEncontrado[0]){
+            // Comparar si los indices de indiceEncontrado es mayor o menor al de los indices del Organismo, ademas de que el objeto
+            // de el indice encontrado sea Alimento o un Organismo que pueda comer
+
+            // evalucacion indices X
+            if ((casillaObjetoEncontrado.getObjeto() instanceof Alimento || (casillaObjetoEncontrado.getObjeto() instanceof Organismo && o.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto()))) && posicionOrganismo[0] < indiceEncontrado[0]){
                 ++siguiCasillaX;
-            } else if (casillaObjetoEncontrado.getObjeto() instanceof Alimento && posicionOrganismo[0] > indiceEncontrado[0]) {
+                huir = false;
+            } else if ((casillaObjetoEncontrado.getObjeto() instanceof Alimento || (casillaObjetoEncontrado.getObjeto() instanceof Organismo && o.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto()))) && posicionOrganismo[0] > indiceEncontrado[0]) {
                 --siguiCasillaX;
+                huir = false;
+            } else if (casillaObjetoEncontrado.getObjeto() instanceof Organismo && !(o.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto())) && posicionOrganismo[0] < indiceEncontrado[0]){
+                --siguiCasillaX;
+                huir = true;
+            } else if (casillaObjetoEncontrado.getObjeto() instanceof Organismo && !(o.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto())) && posicionOrganismo[0] > indiceEncontrado[0]){
+                ++siguiCasillaX;
+                huir = true;
             }
 
-            if (casillaObjetoEncontrado.getObjeto() instanceof Alimento && posicionOrganismo[1] < indiceEncontrado[1]){
+            // evaluacion indices Y
+            if ((casillaObjetoEncontrado.getObjeto() instanceof Alimento || (casillaObjetoEncontrado.getObjeto() instanceof Organismo && o.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto()))) && posicionOrganismo[1] < indiceEncontrado[1]){
                 ++siguiCasillaY;
-            } else if (casillaObjetoEncontrado.getObjeto() instanceof Alimento && posicionOrganismo[1] > indiceEncontrado[1]) {
+                huir = false;
+            } else if ((casillaObjetoEncontrado.getObjeto() instanceof Alimento || (casillaObjetoEncontrado.getObjeto() instanceof Organismo && o.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto()))) && posicionOrganismo[1] > indiceEncontrado[1]) {
                 --siguiCasillaY;
+                huir = false;
+            } else if (casillaObjetoEncontrado.getObjeto() instanceof Organismo && !(o.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto())) && posicionOrganismo[1] < indiceEncontrado[1]){
+                --siguiCasillaY;
+                huir = true;
+            } else if (casillaObjetoEncontrado.getObjeto() instanceof Organismo && !(o.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto())) && posicionOrganismo[1] > indiceEncontrado[1]){
+                ++siguiCasillaY;
+                huir = true;
             }
 
             distanciaMoverVert = Math.sqrt(Math.pow(indiceEncontrado[0] - siguiCasillaX, 2) + Math.pow(indiceEncontrado[1] - posicionOrganismo[1], 2));
             distanciaMoverHoriz = Math.sqrt(Math.pow(indiceEncontrado[0] - posicionOrganismo[0], 2) + Math.pow(indiceEncontrado[1] - siguiCasillaY, 2));
+
+            // determina los siguientes movimientos con base en la distancia entre los movimientos
             if (distanciaMoverHoriz == distanciaMoverVert){
                 moverAleatorio = rnd.nextBoolean();
                 // si es true se mueve horizontalmente, caso contrario verticalmente
@@ -175,9 +219,15 @@ public class Mapa {
                     siguienteMovimiento[0] = siguiCasillaX;
                     siguienteMovimiento[1] = posicionOrganismo[1];
                 }
-            } else if (distanciaMoverHoriz > distanciaMoverVert) {
+            } else if (!huir && distanciaMoverHoriz > distanciaMoverVert) {
                 siguienteMovimiento[0] = siguiCasillaX;
                 siguienteMovimiento[1] = posicionOrganismo[1];
+            } else if (huir && distanciaMoverHoriz < distanciaMoverVert) {
+                siguienteMovimiento[0] = siguiCasillaX;
+                siguienteMovimiento[1] = posicionOrganismo[1];
+            } else if (huir && distanciaMoverHoriz > distanciaMoverVert) {
+                siguienteMovimiento[0] = posicionOrganismo[0];
+                siguienteMovimiento[1] = siguiCasillaY;
             } else {
                 siguienteMovimiento[0] = posicionOrganismo[0];
                 siguienteMovimiento[1] = siguiCasillaY;
@@ -212,17 +262,17 @@ public class Mapa {
             filaInicial = 0;
             buscarFilInicial = false;
         }
-        
+
         if (filaFinal >= matriz.length){
             filaFinal = matriz.length -1;
             buscarFilFinal = false;
         }
-        
+
         if (columnaInicial < 0){
             columnaInicial = 0;
             buscarColInicial = false;
         }
-        
+
         if (columnaFinal >= matriz[0].length){
             columnaFinal = matriz[0].length - 1;
             buscarColFinal = false;
@@ -318,11 +368,11 @@ public class Mapa {
             if (filaInicial > 0){
                 filaInicial--;
             }
-            
+
             if (filaFinal < matriz.length - 1){
                 filaFinal++;
             }
-            
+
             if (columnaInicial > 0){
                 columnaInicial--;
             }
@@ -355,17 +405,17 @@ public class Mapa {
             filaInicial = 0;
             buscarFilInicial = false;
         }
-        
+
         if (filaFinal >= matriz.length){
             filaFinal = matriz.length -1;
             buscarFilFinal = false;
         }
-        
+
         if (columnaInicial < 0){
             columnaInicial = 0;
             buscarColInicial = false;
         }
-        
+
         if (columnaFinal >= matriz[0].length){
             columnaFinal = matriz[0].length - 1;
             buscarColFinal = false;
@@ -461,11 +511,11 @@ public class Mapa {
             if (filaInicial > 0){
                 filaInicial--;
             }
-            
+
             if (filaFinal < matriz.length - 1){
                 filaFinal++;
             }
-            
+
             if (columnaInicial > 0){
                 columnaInicial--;
             }

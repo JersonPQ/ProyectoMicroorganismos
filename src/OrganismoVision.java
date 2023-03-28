@@ -1,37 +1,52 @@
 import javax.swing.ImageIcon;
+import java.util.Random;
 
 public class OrganismoVision extends Organismo{
 
     public OrganismoVision(){
-        energia = 2;
+        energia = 3;
         // PRUEBA
         vision = 3;
-        velocidad = 4;
+        velocidad = 2;
         edad = 1;
     }
 
-    public void atacar(Organismo organismoAComer) {
+    public boolean atacar(Organismo organismoAComer) {
         if (energia == organismoAComer.energia && velocidad == organismoAComer.velocidad && edad == organismoAComer.edad){
+            rnd = new Random();
             ganadorAleatorio = rnd.nextBoolean();
             // en caso de que el random tome boolean 0 quiere decir que el aleatorio no favoreció al Organismo que va a comer
             if (!ganadorAleatorio) {
                 organismoAComer.energia += energia/2;
                 organismoAComer.velocidad += velocidad/2;
                 organismoAComer.vision += vision/2;
+                return false;
             } else {
                 this.energia += (organismoAComer.energia) / 2;
                 this.vision += (organismoAComer.vision) / 2;
                 this.velocidad += (organismoAComer.velocidad) / 2;
+                return true;
             }
-        } else if (energia > organismoAComer.energia || (energia == organismoAComer.energia && velocidad > organismoAComer.velocidad) || (energia == organismoAComer.energia && velocidad == organismoAComer.velocidad && edad > organismoAComer.edad)) {
+        } else if (comprobarAtaque(organismoAComer)) {
             this.energia += (organismoAComer.energia) / 2;
             this.vision += (organismoAComer.vision) / 2;
             this.velocidad += (organismoAComer.velocidad) / 2;
+            return true;
         } else {
             // organismo que iba a ser comido toma los atributos
-            organismoAComer.energia += energia/2;
-            organismoAComer.velocidad += velocidad/2;
-            organismoAComer.vision += vision/2;
+            organismoAComer.energia += energia / 2;
+            organismoAComer.velocidad += velocidad / 2;
+            organismoAComer.vision += vision / 2;
+            return false;
+        }
+    }
+
+    public boolean comprobarAtaque(Organismo organismoAComer){
+        // evalua si organismo puede comer a organismoAComer
+        if (energia > organismoAComer.energia || (energia == organismoAComer.energia && velocidad > organismoAComer.velocidad) || (energia == organismoAComer.energia && velocidad == organismoAComer.velocidad && edad > organismoAComer.edad)) {
+            return true;
+        } else {
+            return false;
         }
     }
 
