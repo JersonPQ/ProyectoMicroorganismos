@@ -32,14 +32,8 @@ public class Interface {
         JPanel mapaPanel = new JPanel();
         mapaPanel.setLayout(new GridLayout(50, 50));
 
-        //Inicializar objetos a Comparar
-
-
         //Ingresando los animales
-        Casilla[][] dimensionMatriz = miMapa.getDimension();
-
-        //Inicializando la clase oyente
-        
+        Casilla[][] dimensionMatriz = miMapa.getDimension();        
         
         //Poniendo las casillas del tablero
         for(Casilla[] array: dimensionMatriz){

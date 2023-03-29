@@ -108,6 +108,7 @@ public class Mapa {
             posY = (int)(Math.floor(Math.random()*49+0));
             if(matriz[posX][posY].getObjeto() == null){
                 matriz[posX][posY].setObjeto(alimentos[indiceAlimento]);
+                //Aqui vamos a poner la imagen del Alimento
                 break;
             }
         }
@@ -531,7 +532,7 @@ public class Mapa {
         return indiceObjetoEncontrado;
     }
 
-    // metodo busqueda de Jugador solo habilita los botones alrededor
+// metodo busqueda de Jugador solo habilita los botones alrededor
 //    public void habilitarBotones(OrganismoJugador o){
 //        filaInicial = o.pos[0] - 1;
 //        filaFinal = o.pos[0] + 1;

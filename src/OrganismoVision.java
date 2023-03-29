@@ -4,8 +4,8 @@ import java.util.Random;
 public class OrganismoVision extends Organismo{
 
     public OrganismoVision(){
-        energia = 3;
         // PRUEBA
+        energia = 3;
         vision = 3;
         velocidad = 2;
         edad = 1;
