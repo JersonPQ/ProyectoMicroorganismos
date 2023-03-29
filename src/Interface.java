@@ -63,26 +63,59 @@ public class Interface {
     public void simular() throws InterruptedException{
         Casilla[][] matriz = miMapa.getDimension();
         Casilla casillaOrganismo;
-        int[] posicionOrganismo;
+        Casilla casillaNuevoObjeto;
         Organismo[] organismos = miMapa.getOrganismos();
+        Alimento[] alimentos = miMapa.getAlimentos();
+        Object objetoComido;
+        int[] posicionOrganismo;
+        int[] posicionNuevoObjeto;
+        int indiceNuevoAlimento;
         int contadorTurno = 0;
         while (true) {
             contadorPasos = 0;
             if (organismos[contadorTurno] instanceof OrganismoJugador){
-                ventana.addKeyListener(oyente);
+                ventana.addKeyListener(oyente); // se anade el keyListener cuando es turno del jugador
                 // turno de organismoJugador
                 System.out.println("Turno de jugador");
-                while (contadorPasos < organismos[contadorTurno].velocidad){
+                while (contadorPasos < organismos[contadorTurno].velocidad && organismos[contadorTurno].energia > 0){
                     Thread.currentThread().sleep(5);
                 }
 
-                ventana.removeKeyListener(oyente);
+                ventana.removeKeyListener(oyente); // se remueve el keyListener despues de completar los pasos
             } else {
                 Organismo organismoAMoverse = organismos[contadorTurno];
-                while (contadorPasos < organismos[contadorTurno].velocidad) {
-                    miMapa.moverse(organismoAMoverse);
+                // organismo se mueve mientras no haya completado sus pasos y mientras tenga 1 o mas de energia
+                while (contadorPasos < organismos[contadorTurno].velocidad && organismos[contadorTurno].energia > 0) {
+                    objetoComido = miMapa.moverse(organismoAMoverse); // obtiene el objeto retornado "comido" al moverse un organismo
+                    if (objetoComido instanceof Organismo){
+                        posicionNuevoObjeto = organismos[organismos.length - 1].getPosition(); // posicion del ultimo organismo creado
+                        String infoNuevoOrg = organismos[organismos.length - 1].getInformacion(); 
+                        casillaNuevoObjeto = matriz[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
+                        casillaNuevoObjeto.boton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                JOptionPane.showMessageDialog(null, infoNuevoOrg);
+                                ventana.requestFocus();
+                            }
+                        });
+
+                    } else if (objetoComido instanceof Alimento) {
+                        indiceNuevoAlimento = miMapa.getIndiceAlimento(); // toma valor del indice del ultimo AlimentoCreado
+                        posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
+                        String infoNuevoAlim = alimentos[indiceNuevoAlimento].getInformacion();
+                        casillaNuevoObjeto = matriz[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
+                        casillaNuevoObjeto.boton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                JOptionPane.showMessageDialog(null, infoNuevoAlim);
+                                ventana.requestFocus();
+                            }
+                        });
+
+                    }
+
                     String infoOrgJugador = organismoAMoverse.getInformacion();
-                    posicionOrganismo = organismoAMoverse.getPosicion();
+                    posicionOrganismo = organismoAMoverse.getPosition();
                     casillaOrganismo = matriz[posicionOrganismo[0]][posicionOrganismo[1]];
 
                     casillaOrganismo.boton.addActionListener(new ActionListener() {
@@ -92,8 +125,9 @@ public class Interface {
                             ventana.requestFocus();
                         }
                     });
-                    Thread.sleep(1000);
+
                     ++contadorPasos;
+                    Thread.sleep(1000);
                 }
 
             }
@@ -106,17 +140,33 @@ public class Interface {
     }
 
     //Crear la clase KeyListenes
-    class OyenteTeclado extends KeyAdapter{
-            //Inicializamos los eventos
-            public void keyTyped(KeyEvent e){
+    class OyenteTeclado extends KeyAdapter {
+        //Inicializamos los eventos
+        public void keyTyped(KeyEvent e) {
             //Obteniendo el org jugador para poder moverlo con las teclas
             Organismo orgJugador = miMapa.getOrganismos()[0];
             ImageIcon imagenJugador = orgJugador.setImagen();
             String infoOrgJugador = orgJugador.getInformacion();
 
+            // objeto comido al moverse
+            Object objetoComido;
+
+            // posicion del nuevoObjeto creado al comerse uno
+            int[] posicionNuevoObjeto;
+
+            // indice donde se crea el nuevo alimento
+            int indiceNuevoAlimento;
+
+            // casilla donde se ubica el nuevo objeto
+            Casilla casillaNuevoObjeto = null;
+
+            // obtener array de organismo y alimento
+            Organismo[] organismos = miMapa.getOrganismos();
+            Alimento[] alimentos = miMapa.getAlimentos();
+
             //Obtenes la posicion del jugador
-            int posJugadorX = orgJugador.getPosicion()[0];
-            int posJugadorY = orgJugador.getPosicion()[1];
+            int posJugadorX = orgJugador.getPosition()[0];
+            int posJugadorY = orgJugador.getPosition()[1];
 
             //Casilla donde se encuentra el organismoJugador
             Casilla[][] mapaDimension = miMapa.getDimension();
@@ -124,34 +174,59 @@ public class Interface {
             char codigo = e.getKeyChar();
 
             //Programar para que el jugador se mueva
-            if(codigo == 'w' || codigo == 'W'){
+            if (codigo == 'w' || codigo == 'W') {
                 //En este if la casilla se moverá para arriba
-                if(posJugadorX <= 0){
+                if (posJugadorX <= 0) {
                     //Aqui se tira la advertencia de que no se puede mover para la arriba
                     JOptionPane.showMessageDialog(null, "No se puede mover para esa dirección");
-                }
-                else{
-                    Casilla siguiCasilla = mapaDimension[posJugadorX-1][posJugadorY];
-                    if (siguiCasilla.getObjeto() != null){
-                        if (siguiCasilla.getObjeto() instanceof Organismo){
+                } else {
+                    Casilla siguiCasilla = mapaDimension[posJugadorX - 1][posJugadorY];
+                    if (siguiCasilla.getObjeto() != null) {
+                        // inicializacion de informacion en "" por necesidad que necesita estar inicializado
+                        String infoNuevoObjeto = "";
+                        if (siguiCasilla.getObjeto() instanceof Organismo) {
                             Organismo organismoAAtacar = (Organismo) siguiCasilla.getObjeto();
-                            if (orgJugador.atacar(organismoAAtacar)){
+                            if (orgJugador.atacar(organismoAAtacar)) {
                                 miMapa.eliminarOrganismo(organismoAAtacar);
+                                posicionNuevoObjeto = organismos[organismos.length - 1].getPosition();
+                                infoNuevoObjeto = organismos[organismos.length - 1].getInformacion();
+                                casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                             }
 
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoEnergia) {
                             AlimentoEnergia alimentoAComer = (AlimentoEnergia) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
+                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
+                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
+                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
+                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVelocidad) {
                             AlimentoVelocidad alimentoAComer = (AlimentoVelocidad) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
+                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
+                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
+                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
+                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVision) {
                             AlimentoVision alimentoAComer = (AlimentoVision) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
+                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
+                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
+                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
+                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         }
+
+                        // variable final de infoNuevoObjeto debido a que actionPerformed pide variable final
+                        String finalInfoNuevoObjeto = infoNuevoObjeto;
+                        casillaNuevoObjeto.boton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                JOptionPane.showMessageDialog(null, finalInfoNuevoObjeto);
+                            }
+                        });
                     }
 
                     casillaJugador.boton.setIcon(null); //Le quitamos la imagen
@@ -160,7 +235,7 @@ public class Interface {
                     //Colocar el objeto en las otra casilla y la imagen
                     siguiCasilla.setObjeto(orgJugador);
                     siguiCasilla.boton.setIcon(new ImageIcon(imagenJugador.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
-                    orgJugador.setPosition(posJugadorX-1, posJugadorY);
+                    orgJugador.setPosition(posJugadorX - 1, posJugadorY);
                     siguiCasilla.boton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -171,36 +246,59 @@ public class Interface {
 
                     ++contadorPasos;
                 }
-            }
-            else if(codigo == 'a' || codigo == 'A'){
+            } else if (codigo == 'a' || codigo == 'A') {
                 //En este if la casilla se moverá para la izquierda
-                if(posJugadorY <= 0){
+                if (posJugadorY <= 0) {
                     //Aqui se tira la advertencia de que no se puede mover para la izquierda
                     JOptionPane.showMessageDialog(null, "No se puede mover para esa dirección");
-                }
-                else{
-                    Casilla siguiCasilla = mapaDimension[posJugadorX][posJugadorY-1];
-                    if (siguiCasilla.getObjeto() != null){
-                        if (siguiCasilla.getObjeto() instanceof Organismo){
+                } else {
+                    Casilla siguiCasilla = mapaDimension[posJugadorX][posJugadorY - 1];
+                    if (siguiCasilla.getObjeto() != null) {
+                        // inicializacion de informacion en "" por necesidad que necesita estar inicializado
+                        String infoNuevoObjeto = "";
+                        if (siguiCasilla.getObjeto() instanceof Organismo) {
                             Organismo organismoAAtacar = (Organismo) siguiCasilla.getObjeto();
-                            orgJugador.atacar(organismoAAtacar);
-                            if (orgJugador.atacar(organismoAAtacar)){
+                            if (orgJugador.atacar(organismoAAtacar)) {
                                 miMapa.eliminarOrganismo(organismoAAtacar);
+                                posicionNuevoObjeto = organismos[organismos.length - 1].getPosition();
+                                infoNuevoObjeto = organismos[organismos.length - 1].getInformacion();
+                                casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                             }
 
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoEnergia) {
                             AlimentoEnergia alimentoAComer = (AlimentoEnergia) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
+                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
+                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
+                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
+                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVelocidad) {
                             AlimentoVelocidad alimentoAComer = (AlimentoVelocidad) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
+                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
+                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
+                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
+                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVision) {
                             AlimentoVision alimentoAComer = (AlimentoVision) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
+                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
+                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
+                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
+                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         }
+
+                        // variable final de infoNuevoObjeto debido a que actionPerformed pide variable final
+                        String finalInfoNuevoObjeto = infoNuevoObjeto;
+                        casillaNuevoObjeto.boton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                JOptionPane.showMessageDialog(null, finalInfoNuevoObjeto);
+                            }
+                        });
                     }
 
                     casillaJugador.boton.setIcon(null); //Le quitamos la imagen
@@ -209,7 +307,7 @@ public class Interface {
                     //Colocar el objeto en las otra casilla y la imagen
                     siguiCasilla.setObjeto(orgJugador);
                     siguiCasilla.boton.setIcon(new ImageIcon(imagenJugador.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
-                    orgJugador.setPosition(posJugadorX, posJugadorY-1);
+                    orgJugador.setPosition(posJugadorX, posJugadorY - 1);
                     siguiCasilla.boton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -220,36 +318,59 @@ public class Interface {
 
                     ++contadorPasos;
                 }
-            }
-            else if(codigo == 's' || codigo == 'S'){
+            } else if (codigo == 's' || codigo == 'S') {
                 //En este se movera para abajo
-                if(posJugadorX >= 49){
+                if (posJugadorX >= 49) {
                     //Aqui se tira la advertencia de que no se puede mover para abajo
                     JOptionPane.showMessageDialog(null, "No se puede mover para esa dirección");
-                }
-                else{
-                    Casilla siguiCasilla = mapaDimension[posJugadorX+1][posJugadorY];
-                    if (siguiCasilla.getObjeto() != null){
-                        if (siguiCasilla.getObjeto() instanceof Organismo){
+                } else {
+                    Casilla siguiCasilla = mapaDimension[posJugadorX + 1][posJugadorY];
+                    if (siguiCasilla.getObjeto() != null) {
+                        // inicializacion de informacion en "" por necesidad que necesita estar inicializado
+                        String infoNuevoObjeto = "";
+                        if (siguiCasilla.getObjeto() instanceof Organismo) {
                             Organismo organismoAAtacar = (Organismo) siguiCasilla.getObjeto();
-                            orgJugador.atacar(organismoAAtacar);
-                            if (orgJugador.atacar(organismoAAtacar)){
+                            if (orgJugador.atacar(organismoAAtacar)) {
                                 miMapa.eliminarOrganismo(organismoAAtacar);
+                                posicionNuevoObjeto = organismos[organismos.length - 1].getPosition();
+                                infoNuevoObjeto = organismos[organismos.length - 1].getInformacion();
+                                casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                             }
 
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoEnergia) {
                             AlimentoEnergia alimentoAComer = (AlimentoEnergia) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
+                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
+                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
+                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
+                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVelocidad) {
                             AlimentoVelocidad alimentoAComer = (AlimentoVelocidad) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
+                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
+                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
+                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
+                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVision) {
                             AlimentoVision alimentoAComer = (AlimentoVision) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
+                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
+                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
+                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
+                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         }
+
+                        // variable final de infoNuevoObjeto debido a que actionPerformed pide variable final
+                        String finalInfoNuevoObjeto = infoNuevoObjeto;
+                        casillaNuevoObjeto.boton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                JOptionPane.showMessageDialog(null, finalInfoNuevoObjeto);
+                            }
+                        });
                     }
 
                     casillaJugador.boton.setIcon(null); //Le quitamos la imagen
@@ -258,7 +379,7 @@ public class Interface {
                     //Colocar el objeto en las otra casilla y la imagen
                     siguiCasilla.setObjeto(orgJugador);
                     siguiCasilla.boton.setIcon(new ImageIcon(imagenJugador.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
-                    orgJugador.setPosition(posJugadorX+1, posJugadorY);
+                    orgJugador.setPosition(posJugadorX + 1, posJugadorY);
                     siguiCasilla.boton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -269,36 +390,59 @@ public class Interface {
 
                     ++contadorPasos;
                 }
-            }
-            else if(codigo == 'd' || codigo == 'D'){
+            } else if (codigo == 'd' || codigo == 'D') {
                 //En este se movera para la derecha
-                if(posJugadorY >= 49){
+                if (posJugadorY >= 49) {
                     //Aqui se tira la advertencia de que no se puede mover para la derecha
                     JOptionPane.showMessageDialog(null, "No se puede mover para esa dirección");
-                }
-                else{
-                    Casilla siguiCasilla = mapaDimension[posJugadorX][posJugadorY+1];
-                    if (siguiCasilla.getObjeto() != null){
-                        if (siguiCasilla.getObjeto() instanceof Organismo){
+                } else {
+                    Casilla siguiCasilla = mapaDimension[posJugadorX][posJugadorY + 1];
+                    if (siguiCasilla.getObjeto() != null) {
+                        // inicializacion de informacion en "" por necesidad que necesita estar inicializado
+                        String infoNuevoObjeto = "";
+                        if (siguiCasilla.getObjeto() instanceof Organismo) {
                             Organismo organismoAAtacar = (Organismo) siguiCasilla.getObjeto();
-                            orgJugador.atacar(organismoAAtacar);
-                            if (orgJugador.atacar(organismoAAtacar)){
+                            if (orgJugador.atacar(organismoAAtacar)) {
                                 miMapa.eliminarOrganismo(organismoAAtacar);
+                                posicionNuevoObjeto = organismos[organismos.length - 1].getPosition();
+                                infoNuevoObjeto = organismos[organismos.length - 1].getInformacion();
+                                casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                             }
 
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoEnergia) {
                             AlimentoEnergia alimentoAComer = (AlimentoEnergia) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
+                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
+                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
+                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
+                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVelocidad) {
                             AlimentoVelocidad alimentoAComer = (AlimentoVelocidad) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
+                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
+                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
+                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
+                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVision) {
                             AlimentoVision alimentoAComer = (AlimentoVision) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
+                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
+                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
+                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
+                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         }
+
+                        // variable final de infoNuevoObjeto debido a que actionPerformed pide variable final
+                        String finalInfoNuevoObjeto = infoNuevoObjeto;
+                        casillaNuevoObjeto.boton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                JOptionPane.showMessageDialog(null, finalInfoNuevoObjeto);
+                            }
+                        });
                     }
 
                     casillaJugador.boton.setIcon(null); //Le quitamos la imagen
@@ -307,7 +451,7 @@ public class Interface {
                     //Colocar el objeto en las otra casilla y la imagen
                     siguiCasilla.setObjeto(orgJugador);
                     siguiCasilla.boton.setIcon(new ImageIcon(imagenJugador.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
-                    orgJugador.setPosition(posJugadorX, posJugadorY+1);
+                    orgJugador.setPosition(posJugadorX, posJugadorY + 1);
                     siguiCasilla.boton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {

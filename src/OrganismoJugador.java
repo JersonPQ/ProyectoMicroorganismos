@@ -7,6 +7,7 @@ public class OrganismoJugador extends Organismo{
         // PRUEBA
         velocidad = 10;
         edad = 1;
+        this.pos = new int[2];
     }
 
     public boolean atacar(Organismo organismoAComer) {
@@ -57,7 +58,7 @@ public class OrganismoJugador extends Organismo{
     }
 
     // getters
-    public int[] getPosicion(){
+    public int[] getPosition(){
         return this.pos;
     }
 
@@ -71,7 +72,6 @@ public class OrganismoJugador extends Organismo{
 
     // setters
     public void setPosition(int i, int j){
-        this.pos = new int[2];
         this.pos[0] = i;
         this.pos[1] = j;
     }

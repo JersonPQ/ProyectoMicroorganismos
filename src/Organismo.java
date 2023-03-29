@@ -18,6 +18,6 @@ public abstract class Organismo implements NPC{
     public abstract void atacar(AlimentoVision alimentoVision);
     public abstract boolean comprobarAtaque(Organismo organismoAComer);
     public abstract ImageIcon setImagen();
-    public abstract int[] getPosicion();
+    public abstract int[] getPosition();
     public abstract String getInformacion();
 }
