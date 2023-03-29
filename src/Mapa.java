@@ -46,14 +46,51 @@ public class Mapa {
         }
 
 
-        //Inicializando los organismos
+        //Inicializando los organismos y colocandolos aleatoriamente
         while (contadorOrganismos < organismos.length){
-            crearOrganismo();
+            valorAleatorio = Math.random()*(1-0)+0;
+            if(valorAleatorio < 0.5){
+                organismos[contadorOrganismos] = new OrganismoVelocidad();
+            }
+            else{
+                organismos[contadorOrganismos] = new OrganismoVision();
+            }
+
+            while (true){
+                posX = (int)(Math.floor(Math.random()*49+0));
+                posY = (int)(Math.floor(Math.random()*49+0));
+                if(matriz[posX][posY].getObjeto() == null){
+                    matriz[posX][posY].setObjeto(organismos[contadorOrganismos]);
+                    organismos[contadorOrganismos].setPosition(posX, posY);
+                    break;
+                }
+            }
+
+            ++contadorOrganismos;
         }
 
-        //Inicializando los alimentos
+        //Inicializando los alimentos y colocandolos aleatoriamente
         for (int i = 0; i < alimentos.length; i++) {
-            crearAlimento(i);
+            valorAleatorio = Math.random()*(1-0)+0;
+            if(valorAleatorio < 0.3){
+                alimentos[i] = new AlimentoEnergia();
+            }
+            else if(0.3 < valorAleatorio && valorAleatorio < 0.6){
+                alimentos[i] = new AlimentoVision();
+            }
+            else{
+                alimentos[i] = new AlimentoVelocidad();
+            }
+
+            while (true){
+                posX = (int)(Math.floor(Math.random()*49+0));
+                posY = (int)(Math.floor(Math.random()*49+0));
+                if(matriz[posX][posY].getObjeto() == null){
+                    matriz[posX][posY].setObjeto(alimentos[i]);
+                    //Aqui vamos a poner la imagen del Alimento
+                    break;
+                }
+            }
         }
 
         System.out.println(organismos[0].getPosicion()[0] + " - " + organismos[0].getPosicion()[1]);
@@ -74,6 +111,8 @@ public class Mapa {
             if(matriz[posX][posY].getObjeto() == null){
                 matriz[posX][posY].setObjeto(organismos[contadorOrganismos]);
                 organismos[contadorOrganismos].setPosition(posX, posY);
+                ImageIcon imagen = ((NPC) matriz[posX][posY].getObjeto()).setImagen();
+                (matriz[posX][posY].boton).setIcon(new ImageIcon(imagen.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
                 break;
             }
         }
@@ -108,7 +147,8 @@ public class Mapa {
             posY = (int)(Math.floor(Math.random()*49+0));
             if(matriz[posX][posY].getObjeto() == null){
                 matriz[posX][posY].setObjeto(alimentos[indiceAlimento]);
-                //Aqui vamos a poner la imagen del Alimento
+                ImageIcon imagen = ((NPC) matriz[posX][posY].getObjeto()).setImagen();
+                (matriz[posX][posY].boton).setIcon(new ImageIcon(imagen.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
                 break;
             }
         }
@@ -119,11 +159,11 @@ public class Mapa {
         crearAlimento(indiceAlimento);
     }
 
-    public void moverse(Organismo o){
+    public void moverse(Organismo organismo){
         Casilla casillaObjetoEncontrado, casillaJugador, siguienteCasilla;
-        ImageIcon imagenJugador = o.setImagen();
-        int[] indiceEncontrado = o.pos;
-        int[] posicionOrganismo = o.getPosicion();
+        ImageIcon imagenJugador = organismo.setImagen();
+        int[] indiceEncontrado = organismo.pos;
+        int[] posicionOrganismo = organismo.getPosicion();
         int siguiCasillaX = posicionOrganismo[0];
         int siguiCasillaY = posicionOrganismo[1];
         double distanciaMoverVert, distanciaMoverHoriz;
@@ -131,12 +171,12 @@ public class Mapa {
         boolean huir = false;
         int[] siguienteMovimiento = new int[2];
         rnd = new Random();
-        if (o instanceof OrganismoVelocidad) {
+        if (organismo instanceof OrganismoVelocidad) {
             System.out.println("Organismo velocidad en la posicion (" + posicionOrganismo[0] + ", " + posicionOrganismo[1] + ")");
-            indiceEncontrado = busqueda((OrganismoVelocidad) o);
-        } else if (o instanceof OrganismoVision) {
+            indiceEncontrado = busqueda((OrganismoVelocidad) organismo);
+        } else if (organismo instanceof OrganismoVision) {
             System.out.println("Organismo vision en la posicion (" + posicionOrganismo[0] + ", " + posicionOrganismo[1] + ")");
-            indiceEncontrado = busqueda((OrganismoVision) o);
+            indiceEncontrado = busqueda((OrganismoVision) organismo);
         }
 //        else {
 //            busqueda((OrganismoJugador) o);
@@ -177,38 +217,37 @@ public class Mapa {
             // de el indice encontrado sea Alimento o un Organismo que pueda comer
 
             // evalucacion indices X
-            if ((casillaObjetoEncontrado.getObjeto() instanceof Alimento || (casillaObjetoEncontrado.getObjeto() instanceof Organismo && o.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto()))) && posicionOrganismo[0] < indiceEncontrado[0]){
+            if ((casillaObjetoEncontrado.getObjeto() instanceof Alimento || (casillaObjetoEncontrado.getObjeto() instanceof Organismo && organismo.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto()))) && posicionOrganismo[0] < indiceEncontrado[0]){
                 ++siguiCasillaX;
                 huir = false;
-            } else if ((casillaObjetoEncontrado.getObjeto() instanceof Alimento || (casillaObjetoEncontrado.getObjeto() instanceof Organismo && o.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto()))) && posicionOrganismo[0] > indiceEncontrado[0]) {
+            } else if ((casillaObjetoEncontrado.getObjeto() instanceof Alimento || (casillaObjetoEncontrado.getObjeto() instanceof Organismo && organismo.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto()))) && posicionOrganismo[0] > indiceEncontrado[0]) {
                 --siguiCasillaX;
                 huir = false;
-            } else if (casillaObjetoEncontrado.getObjeto() instanceof Organismo && !(o.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto())) && posicionOrganismo[0] < indiceEncontrado[0]){
+            } else if (casillaObjetoEncontrado.getObjeto() instanceof Organismo && !(organismo.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto())) && posicionOrganismo[0] < indiceEncontrado[0]){
                 --siguiCasillaX;
                 huir = true;
-            } else if (casillaObjetoEncontrado.getObjeto() instanceof Organismo && !(o.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto())) && posicionOrganismo[0] > indiceEncontrado[0]){
+            } else if (casillaObjetoEncontrado.getObjeto() instanceof Organismo && !(organismo.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto())) && posicionOrganismo[0] > indiceEncontrado[0]){
                 ++siguiCasillaX;
                 huir = true;
             }
 
             // evaluacion indices Y
-            if ((casillaObjetoEncontrado.getObjeto() instanceof Alimento || (casillaObjetoEncontrado.getObjeto() instanceof Organismo && o.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto()))) && posicionOrganismo[1] < indiceEncontrado[1]){
+            if ((casillaObjetoEncontrado.getObjeto() instanceof Alimento || (casillaObjetoEncontrado.getObjeto() instanceof Organismo && organismo.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto()))) && posicionOrganismo[1] < indiceEncontrado[1]){
                 ++siguiCasillaY;
                 huir = false;
-            } else if ((casillaObjetoEncontrado.getObjeto() instanceof Alimento || (casillaObjetoEncontrado.getObjeto() instanceof Organismo && o.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto()))) && posicionOrganismo[1] > indiceEncontrado[1]) {
+            } else if ((casillaObjetoEncontrado.getObjeto() instanceof Alimento || (casillaObjetoEncontrado.getObjeto() instanceof Organismo && organismo.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto()))) && posicionOrganismo[1] > indiceEncontrado[1]) {
                 --siguiCasillaY;
                 huir = false;
-            } else if (casillaObjetoEncontrado.getObjeto() instanceof Organismo && !(o.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto())) && posicionOrganismo[1] < indiceEncontrado[1]){
+            } else if (casillaObjetoEncontrado.getObjeto() instanceof Organismo && !(organismo.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto())) && posicionOrganismo[1] < indiceEncontrado[1]){
                 --siguiCasillaY;
                 huir = true;
-            } else if (casillaObjetoEncontrado.getObjeto() instanceof Organismo && !(o.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto())) && posicionOrganismo[1] > indiceEncontrado[1]){
+            } else if (casillaObjetoEncontrado.getObjeto() instanceof Organismo && !(organismo.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto())) && posicionOrganismo[1] > indiceEncontrado[1]){
                 ++siguiCasillaY;
                 huir = true;
             }
 
             distanciaMoverVert = Math.sqrt(Math.pow(indiceEncontrado[0] - siguiCasillaX, 2) + Math.pow(indiceEncontrado[1] - posicionOrganismo[1], 2));
             distanciaMoverHoriz = Math.sqrt(Math.pow(indiceEncontrado[0] - posicionOrganismo[0], 2) + Math.pow(indiceEncontrado[1] - siguiCasillaY, 2));
-
             // determina los siguientes movimientos con base en la distancia entre los movimientos
             if (distanciaMoverHoriz == distanciaMoverVert){
                 moverAleatorio = rnd.nextBoolean();
@@ -237,13 +276,36 @@ public class Mapa {
 
         //
         siguienteCasilla = matriz[siguienteMovimiento[0]][siguienteMovimiento[1]];
+        // llama funcion atacar() en caso de que la sigiuenteCasilla no sea null
+        if (siguienteCasilla.getObjeto() != null){
+            if (siguienteCasilla.getObjeto() instanceof Organismo){
+                Organismo organismoAAtacar = (Organismo) siguienteCasilla.getObjeto();
+                if (organismo.atacar(organismoAAtacar)){
+                    eliminarOrganismo(organismoAAtacar);
+                }
+
+            } else if (siguienteCasilla.getObjeto() instanceof AlimentoEnergia) {
+                AlimentoEnergia alimentoAComer = (AlimentoEnergia) siguienteCasilla.getObjeto();
+                organismo.atacar(alimentoAComer);
+                eliminarAlimento(alimentoAComer);
+            } else if (siguienteCasilla.getObjeto() instanceof AlimentoVelocidad) {
+                AlimentoVelocidad alimentoAComer = (AlimentoVelocidad) siguienteCasilla.getObjeto();
+                organismo.atacar(alimentoAComer);
+                eliminarAlimento(alimentoAComer);
+            } else if (siguienteCasilla.getObjeto() instanceof AlimentoVision) {
+                AlimentoVision alimentoAComer = (AlimentoVision) siguienteCasilla.getObjeto();
+                organismo.atacar(alimentoAComer);
+                eliminarAlimento(alimentoAComer);
+            }
+        }
+
         casillaJugador.boton.setIcon(null); //Le quitamos la imagen
         casillaJugador.setObjeto(); //Le quitamos el objeto y lo desabilitamos
 
         //Colocar el objeto en las otra casilla y la imagen
-        siguienteCasilla.setObjeto(o);
+        siguienteCasilla.setObjeto(organismo);
         siguienteCasilla.boton.setIcon(new ImageIcon(imagenJugador.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
-        o.setPosition(siguienteMovimiento[0], siguienteMovimiento[1]);
+        organismo.setPosition(siguienteMovimiento[0], siguienteMovimiento[1]);
     }
 
     public int[] busqueda(OrganismoVelocidad o){

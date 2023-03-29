@@ -17,9 +17,9 @@ public class OrganismoVelocidad extends Organismo{
             ganadorAleatorio = rnd.nextBoolean();
             // en caso de que el random tome boolean 0 quiere decir que el aleatorio no favoreció al Organismo que va a comer
             if (!ganadorAleatorio) {
-                organismoAComer.energia += energia/2;
-                organismoAComer.velocidad += velocidad/2;
-                organismoAComer.vision += vision/2;
+                organismoAComer.energia += energia / 2;
+                organismoAComer.velocidad += velocidad / 2;
+                organismoAComer.vision += vision / 2;
                 return false;
             } else {
                 this.energia += (organismoAComer.energia) / 2;
@@ -55,7 +55,7 @@ public class OrganismoVelocidad extends Organismo{
     }
 
     public void atacar(AlimentoVision alimentoVision){
-        this.velocidad += alimentoVision.getAtributo();
+        this.vision += alimentoVision.getAtributo();
     }
 
     public void atacar(AlimentoVelocidad alimentoVelocidad){
