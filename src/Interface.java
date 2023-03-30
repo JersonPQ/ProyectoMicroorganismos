@@ -225,6 +225,7 @@ public class Interface {
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 JOptionPane.showMessageDialog(null, finalInfoNuevoObjeto);
+                                ventana.requestFocus();
                             }
                         });
                     }
@@ -297,6 +298,7 @@ public class Interface {
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 JOptionPane.showMessageDialog(null, finalInfoNuevoObjeto);
+                                ventana.requestFocus();
                             }
                         });
                     }
@@ -369,6 +371,7 @@ public class Interface {
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 JOptionPane.showMessageDialog(null, finalInfoNuevoObjeto);
+                                ventana.requestFocus();
                             }
                         });
                     }
@@ -441,6 +444,7 @@ public class Interface {
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 JOptionPane.showMessageDialog(null, finalInfoNuevoObjeto);
+                                ventana.requestFocus();
                             }
                         });
                     }

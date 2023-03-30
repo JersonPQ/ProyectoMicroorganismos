@@ -5,6 +5,9 @@ public interface Constantes {
     final int minVelocidad = 0; //Minima de Velocidad
     final int minVision = 0; //Minima de Vision
     final int minEnergia = 0; //Minima de Energia
-    final int cantOrganismos = 0; //Cantidad de organismos 
-    final int cantAlimentos = 0; //Cantidad de alimentos
+    
+    final int cantOrganismos = 20; //Cantidad de organismos 
+    final int cantAlimentos = 40; //Cantidad de alimentos
+    final int columnasTotales = 50; //Numero de columnas
+    final int filasTotales = 50;  //Numero de filas
 }
