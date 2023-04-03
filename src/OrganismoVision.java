@@ -4,11 +4,11 @@ import java.util.Random;
 public class OrganismoVision extends Organismo{
 
     public OrganismoVision(){
-        // PRUEBA
-        energia = 3;
-        vision = 3;
-        velocidad = 2;
         edad = 1;
+        energia = 50;
+        vision = 1;
+        // PRUEBA
+        velocidad = 4;
         this.pos = new int[2];
     }
 
@@ -61,6 +61,14 @@ public class OrganismoVision extends Organismo{
 
     public void atacar(AlimentoVelocidad alimentoVelocidad){
         this.velocidad += alimentoVelocidad.getAtributo();
+    }
+
+    public void aumentarEdad(){
+        this.edad++;
+    }
+
+    public void disminuirEnergia(){
+        this.energia--;
     }
 
     // getters

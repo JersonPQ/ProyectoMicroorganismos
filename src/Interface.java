@@ -10,7 +10,6 @@ public class Interface {
     private Mapa miMapa = new Mapa();
     OyenteTeclado oyente;
     private ImageIcon imagen;
-    private String informacion;
     private int contadorPasos;
     public Interface() throws InterruptedException{
         ventana = new JFrame();
@@ -39,19 +38,20 @@ public class Interface {
         for(Casilla[] array: dimensionMatriz){
             for(Casilla elemento: array){
                 (elemento.boton).setPreferredSize(new Dimension(40, 40));
+                (elemento.boton).addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String informacion = ((NPC) elemento.getObjeto()).getInformacion();
+
+                        JOptionPane.showMessageDialog(null, informacion);
+                        ventana.requestFocus();
+                    }
+                });
+
                 if(elemento.getObjeto() != null){
                     // comparar si la clase objetoComparando es algún tipo de organismo
                     imagen = ((NPC) elemento.getObjeto()).setImagen();
-                    (elemento.boton).addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            informacion = ((NPC) elemento.getObjeto()).getInformacion();
-                        
-                            JOptionPane.showMessageDialog(null, informacion);
-                            ventana.requestFocus();
-                        }
-                    });
-                    (elemento.boton).setIcon(new ImageIcon(imagen.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));   
+                    (elemento.boton).setIcon(new ImageIcon(imagen.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
                 }
                 mapaPanel.add(elemento.boton);
             }
@@ -71,72 +71,39 @@ public class Interface {
         int[] posicionNuevoObjeto;
         int indiceNuevoAlimento;
         int contadorTurno = 0;
-        while (true) {
+        while (miMapa.getJugando()) {
             contadorPasos = 0;
+            Organismo organismoAMoverse = organismos[contadorTurno];
             if (organismos[contadorTurno] instanceof OrganismoJugador){
+                JOptionPane.showMessageDialog(null, "Turno del Jugador");
                 ventana.addKeyListener(oyente); // se anade el keyListener cuando es turno del jugador
                 // turno de organismoJugador
                 System.out.println("Turno de jugador");
-                while (contadorPasos < organismos[contadorTurno].velocidad && organismos[contadorTurno].energia > 0){
+                while (contadorPasos < organismoAMoverse.velocidad && organismoAMoverse.energia > 0 && miMapa.getJugando()){
                     Thread.currentThread().sleep(5);
                 }
 
                 ventana.removeKeyListener(oyente); // se remueve el keyListener despues de completar los pasos
             } else {
-                Organismo organismoAMoverse = organismos[contadorTurno];
-                // organismo se mueve mientras no haya completado sus pasos y mientras tenga 1 o mas de energia
-                while (contadorPasos < organismos[contadorTurno].velocidad && organismos[contadorTurno].energia > 0) {
-                    objetoComido = miMapa.moverse(organismoAMoverse); // obtiene el objeto retornado "comido" al moverse un organismo
-                    if (objetoComido instanceof Organismo){
-                        posicionNuevoObjeto = organismos[organismos.length - 1].getPosition(); // posicion del ultimo organismo creado
-                        String infoNuevoOrg = organismos[organismos.length - 1].getInformacion(); 
-                        casillaNuevoObjeto = matriz[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
-                        casillaNuevoObjeto.boton.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                JOptionPane.showMessageDialog(null, infoNuevoOrg);
-                                ventana.requestFocus();
-                            }
-                        });
-
-                    } else if (objetoComido instanceof Alimento) {
-                        indiceNuevoAlimento = miMapa.getIndiceAlimento(); // toma valor del indice del ultimo AlimentoCreado
-                        posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
-                        String infoNuevoAlim = alimentos[indiceNuevoAlimento].getInformacion();
-                        casillaNuevoObjeto = matriz[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
-                        casillaNuevoObjeto.boton.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                JOptionPane.showMessageDialog(null, infoNuevoAlim);
-                                ventana.requestFocus();
-                            }
-                        });
-
-                    }
-
-                    String infoOrgJugador = organismoAMoverse.getInformacion();
-                    posicionOrganismo = organismoAMoverse.getPosition();
-                    casillaOrganismo = matriz[posicionOrganismo[0]][posicionOrganismo[1]];
-
-                    casillaOrganismo.boton.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            JOptionPane.showMessageDialog(null, infoOrgJugador);
-                            ventana.requestFocus();
-                        }
-                    });
-
+                // organismo se mueve mientras no haya completado sus pasos, mientras tenga 1 o mas de energia y mientras jugador siga en juego
+                while (contadorPasos < organismoAMoverse.velocidad && organismoAMoverse.energia > 0 && miMapa.getJugando()) {
+                    miMapa.moverse(organismoAMoverse); // obtiene el objeto retornado "comido" al moverse un organismo
                     ++contadorPasos;
-                    Thread.sleep(1000);
+                    // disminuye energia luego de moverse
+                    organismoAMoverse.disminuirEnergia();
+                    Thread.currentThread().sleep(500);
                 }
-
             }
 
+            // aumenta la edad del organismo que acaba de moverse despues de realizar sus movimientos
+            organismoAMoverse.aumentarEdad();
             ++contadorTurno;
             if (contadorTurno >= organismos.length){
                 contadorTurno = 0;
             }
         }
+
+        JOptionPane.showMessageDialog(null, "Has perdido!");
     }
 
     //Crear la clase KeyListenes
@@ -182,70 +149,41 @@ public class Interface {
                 } else {
                     Casilla siguiCasilla = mapaDimension[posJugadorX - 1][posJugadorY];
                     if (siguiCasilla.getObjeto() != null) {
-                        // inicializacion de informacion en "" por necesidad que necesita estar inicializado
-                        String infoNuevoObjeto = "";
                         if (siguiCasilla.getObjeto() instanceof Organismo) {
                             Organismo organismoAAtacar = (Organismo) siguiCasilla.getObjeto();
+                            // evalua si organismo pudo comerse al otro organismo
                             if (orgJugador.atacar(organismoAAtacar)) {
                                 miMapa.eliminarOrganismo(organismoAAtacar);
-                                posicionNuevoObjeto = organismos[organismos.length - 1].getPosition();
-                                infoNuevoObjeto = organismos[organismos.length - 1].getInformacion();
-                                casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
+                            } else {
+                                miMapa.setJugando(false);
                             }
 
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoEnergia) {
                             AlimentoEnergia alimentoAComer = (AlimentoEnergia) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
-                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
-                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
-                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
-                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVelocidad) {
                             AlimentoVelocidad alimentoAComer = (AlimentoVelocidad) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
-                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
-                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
-                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
-                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVision) {
                             AlimentoVision alimentoAComer = (AlimentoVision) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
-                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
-                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
-                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
-                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         }
-
-                        // variable final de infoNuevoObjeto debido a que actionPerformed pide variable final
-                        String finalInfoNuevoObjeto = infoNuevoObjeto;
-                        casillaNuevoObjeto.boton.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                JOptionPane.showMessageDialog(null, finalInfoNuevoObjeto);
-                                ventana.requestFocus();
-                            }
-                        });
                     }
 
                     casillaJugador.boton.setIcon(null); //Le quitamos la imagen
                     casillaJugador.setObjeto(); //Le quitamos el objeto y lo desabilitamos
 
-                    //Colocar el objeto en las otra casilla y la imagen
-                    siguiCasilla.setObjeto(orgJugador);
-                    siguiCasilla.boton.setIcon(new ImageIcon(imagenJugador.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
-                    orgJugador.setPosition(posJugadorX - 1, posJugadorY);
-                    siguiCasilla.boton.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            JOptionPane.showMessageDialog(null, infoOrgJugador);
-                            ventana.requestFocus();
-                        }
-                    });
-
-                    ++contadorPasos;
+                    if (miMapa.getJugando()){
+                        //Colocar el objeto en las otra casilla y la imagen
+                        siguiCasilla.setObjeto(orgJugador);
+                        siguiCasilla.boton.setIcon(new ImageIcon(imagenJugador.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
+                        orgJugador.setPosition(posJugadorX - 1, posJugadorY);
+                        ++contadorPasos;
+                        orgJugador.disminuirEnergia();
+                    }
                 }
             } else if (codigo == 'a' || codigo == 'A') {
                 //En este if la casilla se moverá para la izquierda
@@ -261,64 +199,36 @@ public class Interface {
                             Organismo organismoAAtacar = (Organismo) siguiCasilla.getObjeto();
                             if (orgJugador.atacar(organismoAAtacar)) {
                                 miMapa.eliminarOrganismo(organismoAAtacar);
-                                posicionNuevoObjeto = organismos[organismos.length - 1].getPosition();
-                                infoNuevoObjeto = organismos[organismos.length - 1].getInformacion();
-                                casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
+                            } else {
+                                miMapa.setJugando(false);
                             }
 
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoEnergia) {
                             AlimentoEnergia alimentoAComer = (AlimentoEnergia) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
-                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
-                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
-                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
-                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVelocidad) {
                             AlimentoVelocidad alimentoAComer = (AlimentoVelocidad) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
-                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
-                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
-                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
-                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVision) {
                             AlimentoVision alimentoAComer = (AlimentoVision) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
-                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
-                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
-                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
-                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         }
-
-                        // variable final de infoNuevoObjeto debido a que actionPerformed pide variable final
-                        String finalInfoNuevoObjeto = infoNuevoObjeto;
-                        casillaNuevoObjeto.boton.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                JOptionPane.showMessageDialog(null, finalInfoNuevoObjeto);
-                                ventana.requestFocus();
-                            }
-                        });
                     }
 
                     casillaJugador.boton.setIcon(null); //Le quitamos la imagen
                     casillaJugador.setObjeto(); //Le quitamos el objeto y lo desabilitamos
 
-                    //Colocar el objeto en las otra casilla y la imagen
-                    siguiCasilla.setObjeto(orgJugador);
-                    siguiCasilla.boton.setIcon(new ImageIcon(imagenJugador.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
-                    orgJugador.setPosition(posJugadorX, posJugadorY - 1);
-                    siguiCasilla.boton.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            JOptionPane.showMessageDialog(null, infoOrgJugador);
-                            ventana.requestFocus();
-                        }
-                    });
-
-                    ++contadorPasos;
+                    if (miMapa.getJugando()){
+                        //Colocar el objeto en las otra casilla y la imagen
+                        siguiCasilla.setObjeto(orgJugador);
+                        siguiCasilla.boton.setIcon(new ImageIcon(imagenJugador.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
+                        orgJugador.setPosition(posJugadorX, posJugadorY - 1);
+                        ++contadorPasos;
+                        orgJugador.disminuirEnergia();
+                    }
                 }
             } else if (codigo == 's' || codigo == 'S') {
                 //En este se movera para abajo
@@ -334,64 +244,36 @@ public class Interface {
                             Organismo organismoAAtacar = (Organismo) siguiCasilla.getObjeto();
                             if (orgJugador.atacar(organismoAAtacar)) {
                                 miMapa.eliminarOrganismo(organismoAAtacar);
-                                posicionNuevoObjeto = organismos[organismos.length - 1].getPosition();
-                                infoNuevoObjeto = organismos[organismos.length - 1].getInformacion();
-                                casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
+                            } else {
+                                miMapa.setJugando(false);
                             }
 
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoEnergia) {
                             AlimentoEnergia alimentoAComer = (AlimentoEnergia) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
-                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
-                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
-                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
-                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVelocidad) {
                             AlimentoVelocidad alimentoAComer = (AlimentoVelocidad) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
-                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
-                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
-                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
-                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVision) {
                             AlimentoVision alimentoAComer = (AlimentoVision) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
-                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
-                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
-                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
-                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         }
-
-                        // variable final de infoNuevoObjeto debido a que actionPerformed pide variable final
-                        String finalInfoNuevoObjeto = infoNuevoObjeto;
-                        casillaNuevoObjeto.boton.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                JOptionPane.showMessageDialog(null, finalInfoNuevoObjeto);
-                                ventana.requestFocus();
-                            }
-                        });
                     }
 
                     casillaJugador.boton.setIcon(null); //Le quitamos la imagen
                     casillaJugador.setObjeto(); //Le quitamos el objeto y lo desabilitamos
 
-                    //Colocar el objeto en las otra casilla y la imagen
-                    siguiCasilla.setObjeto(orgJugador);
-                    siguiCasilla.boton.setIcon(new ImageIcon(imagenJugador.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
-                    orgJugador.setPosition(posJugadorX + 1, posJugadorY);
-                    siguiCasilla.boton.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            JOptionPane.showMessageDialog(null, infoOrgJugador);
-                            ventana.requestFocus();
-                        }
-                    });
-
-                    ++contadorPasos;
+                    if (miMapa.getJugando()){
+                        //Colocar el objeto en las otra casilla y la imagen
+                        siguiCasilla.setObjeto(orgJugador);
+                        siguiCasilla.boton.setIcon(new ImageIcon(imagenJugador.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
+                        orgJugador.setPosition(posJugadorX + 1, posJugadorY);
+                        ++contadorPasos;
+                        orgJugador.disminuirEnergia();
+                    }
                 }
             } else if (codigo == 'd' || codigo == 'D') {
                 //En este se movera para la derecha
@@ -407,64 +289,36 @@ public class Interface {
                             Organismo organismoAAtacar = (Organismo) siguiCasilla.getObjeto();
                             if (orgJugador.atacar(organismoAAtacar)) {
                                 miMapa.eliminarOrganismo(organismoAAtacar);
-                                posicionNuevoObjeto = organismos[organismos.length - 1].getPosition();
-                                infoNuevoObjeto = organismos[organismos.length - 1].getInformacion();
-                                casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
+                            } else {
+                                miMapa.setJugando(false);
                             }
 
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoEnergia) {
                             AlimentoEnergia alimentoAComer = (AlimentoEnergia) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
-                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
-                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
-                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
-                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVelocidad) {
                             AlimentoVelocidad alimentoAComer = (AlimentoVelocidad) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
-                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
-                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
-                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
-                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         } else if (siguiCasilla.getObjeto() instanceof AlimentoVision) {
                             AlimentoVision alimentoAComer = (AlimentoVision) siguiCasilla.getObjeto();
                             orgJugador.atacar(alimentoAComer);
                             miMapa.eliminarAlimento(alimentoAComer);
-                            indiceNuevoAlimento = miMapa.getIndiceAlimento();
-                            posicionNuevoObjeto = alimentos[indiceNuevoAlimento].getPosition();
-                            infoNuevoObjeto = alimentos[indiceNuevoAlimento].getInformacion();
-                            casillaNuevoObjeto = mapaDimension[posicionNuevoObjeto[0]][posicionNuevoObjeto[1]];
                         }
-
-                        // variable final de infoNuevoObjeto debido a que actionPerformed pide variable final
-                        String finalInfoNuevoObjeto = infoNuevoObjeto;
-                        casillaNuevoObjeto.boton.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                JOptionPane.showMessageDialog(null, finalInfoNuevoObjeto);
-                                ventana.requestFocus();
-                            }
-                        });
                     }
 
                     casillaJugador.boton.setIcon(null); //Le quitamos la imagen
                     casillaJugador.setObjeto(); //Le quitamos el objeto y lo desabilitamos
 
-                    //Colocar el objeto en las otra casilla y la imagen
-                    siguiCasilla.setObjeto(orgJugador);
-                    siguiCasilla.boton.setIcon(new ImageIcon(imagenJugador.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
-                    orgJugador.setPosition(posJugadorX, posJugadorY + 1);
-                    siguiCasilla.boton.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            JOptionPane.showMessageDialog(null, infoOrgJugador);
-                            ventana.requestFocus();
-                        }
-                    });
-
-                    ++contadorPasos;
+                    if (miMapa.getJugando()){
+                        //Colocar el objeto en las otra casilla y la imagen
+                        siguiCasilla.setObjeto(orgJugador);
+                        siguiCasilla.boton.setIcon(new ImageIcon(imagenJugador.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
+                        orgJugador.setPosition(posJugadorX, posJugadorY + 1);
+                        ++contadorPasos;
+                        orgJugador.disminuirEnergia();
+                    }
                 }
             }
         }
