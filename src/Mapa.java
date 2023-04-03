@@ -11,18 +11,14 @@ public class Mapa implements Constantes{
     private double valorAleatorio;
     private int posX;
     private int posY;
-
-    private int filaInicial, filaFinal, columnaInicial, columnaFinal, contBusqueda;
-    private double distanciaPuntos;
+    private boolean jugando;
     private Random rnd;
-    private int contadorOrganismos;
-    private int indiceAlimento;
 
     public Mapa(){
         matriz = new Casilla[filasTotales][columnasTotales];
         alimentos = new Alimento[cantAlimentos];
         organismos = new Organismo[cantOrganismos];
-        contadorOrganismos = 1;
+        jugando = true;
 
         //Inicializando cada Casilla en la matriz
         for (int i = 0; i < filasTotales; i++){
@@ -46,26 +42,24 @@ public class Mapa implements Constantes{
 
 
         //Inicializando los organismos y colocandolos aleatoriamente
-        while (contadorOrganismos < organismos.length){
+        for (int i = 1; i < organismos.length; i++) {
             valorAleatorio = Math.random()*(1-0)+0;
             if(valorAleatorio < 0.5){
-                organismos[contadorOrganismos] = new OrganismoVelocidad();
+                organismos[i] = new OrganismoVelocidad();
             }
             else{
-                organismos[contadorOrganismos] = new OrganismoVision();
+                organismos[i] = new OrganismoVision();
             }
 
             while (true){
                 posX = (int)(Math.floor(Math.random()*49+0));
                 posY = (int)(Math.floor(Math.random()*49+0));
                 if(matriz[posX][posY].getObjeto() == null){
-                    matriz[posX][posY].setObjeto(organismos[contadorOrganismos]);
-                    organismos[contadorOrganismos].setPosition(posX, posY);
+                    matriz[posX][posY].setObjeto(organismos[i]);
+                    organismos[i].setPosition(posX, posY);
                     break;
                 }
             }
-
-            ++contadorOrganismos;
         }
 
         //Inicializando los alimentos y colocandolos aleatoriamente
@@ -81,7 +75,6 @@ public class Mapa implements Constantes{
                 alimentos[i] = new AlimentoVelocidad();
             }
 
-            indiceAlimento = i; // toma valor del indice del ultimo alimento creado
             while (true){
                 posX = (int)(Math.floor(Math.random()*49+0));
                 posY = (int)(Math.floor(Math.random()*49+0));
@@ -97,57 +90,56 @@ public class Mapa implements Constantes{
     }
 
     public void crearOrganismo(){
+        int indiceOrganismo = organismos.length - 1;
         valorAleatorio = Math.random()*(1-0)+0;
         if(valorAleatorio < 0.5){
-            organismos[contadorOrganismos] = new OrganismoVelocidad();
+            organismos[indiceOrganismo] = new OrganismoVelocidad();
         }
         else{
-            organismos[contadorOrganismos] = new OrganismoVision();
+            organismos[indiceOrganismo] = new OrganismoVision();
         }
 
         while (true){
             posX = (int)(Math.floor(Math.random()*49+0));
             posY = (int)(Math.floor(Math.random()*49+0));
             if(matriz[posX][posY].getObjeto() == null){
-                matriz[posX][posY].setObjeto(organismos[contadorOrganismos]);
-                organismos[contadorOrganismos].setPosition(posX, posY);
+                matriz[posX][posY].setObjeto(organismos[indiceOrganismo]);
+                organismos[indiceOrganismo].setPosition(posX, posY);
                 ImageIcon imagen = ((NPC) matriz[posX][posY].getObjeto()).setImagen();
                 (matriz[posX][posY].boton).setIcon(new ImageIcon(imagen.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
                 break;
             }
         }
-
-        ++contadorOrganismos;
     }
 
     public void eliminarOrganismo(Organismo organismoEliminar){
         int indiceOrganismo = Arrays.asList(organismos).indexOf(organismoEliminar);
+        // mueve los organismos siguientes del organismo eliminado un espacio a la izquierda
         for (int i = indiceOrganismo; i < organismos.length - 1; i++) {
             organismos[i] = organismos[i + 1];
         }
 
-        --contadorOrganismos;
         crearOrganismo();
     }
 
-    public void crearAlimento(){
+    public void crearAlimento(int _indiceAlimento){
         valorAleatorio = Math.random()*(1-0)+0;
         if(valorAleatorio < 0.3){
-            alimentos[indiceAlimento] = new AlimentoEnergia();
+            alimentos[_indiceAlimento] = new AlimentoEnergia();
         }
         else if(0.3 < valorAleatorio && valorAleatorio < 0.6){
-            alimentos[indiceAlimento] = new AlimentoVision();
+            alimentos[_indiceAlimento] = new AlimentoVision();
         }
         else{
-            alimentos[indiceAlimento] = new AlimentoVelocidad();
+            alimentos[_indiceAlimento] = new AlimentoVelocidad();
         }
 
         while (true){
             posX = (int)(Math.floor(Math.random()*49+0));
             posY = (int)(Math.floor(Math.random()*49+0));
             if(matriz[posX][posY].getObjeto() == null){
-                matriz[posX][posY].setObjeto(alimentos[indiceAlimento]);
-                alimentos[indiceAlimento].setPosition(posX, posY);
+                matriz[posX][posY].setObjeto(alimentos[_indiceAlimento]);
+                alimentos[_indiceAlimento].setPosition(posX, posY);
                 ImageIcon imagen = ((NPC) matriz[posX][posY].getObjeto()).setImagen();
                 (matriz[posX][posY].boton).setIcon(new ImageIcon(imagen.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
                 break;
@@ -156,14 +148,14 @@ public class Mapa implements Constantes{
     }
 
     public void eliminarAlimento(Alimento alimentoEliminar){
-        indiceAlimento = Arrays.asList(alimentos).indexOf(alimentoEliminar);
-        crearAlimento();
+        int indiceAlimento = Arrays.asList(alimentos).indexOf(alimentoEliminar);
+        crearAlimento(indiceAlimento);
     }
 
-    public Object moverse(Organismo organismo){
+    public void moverse(Organismo organismo){
         Casilla casillaObjetoEncontrado, casillaJugador, siguienteCasilla;
         ImageIcon imagenJugador = organismo.setImagen();
-        Object objetoEncontrado;
+        Object objetoSiguiCasilla;
 
         // obtiene array de la posicion del organismo
         int[] posicionOrganismo = organismo.getPosition();
@@ -292,25 +284,29 @@ public class Mapa implements Constantes{
 
         //
         siguienteCasilla = matriz[siguienteMovimiento[0]][siguienteMovimiento[1]];
-        objetoEncontrado = siguienteCasilla.getObjeto(); // toma objeto de la siguiente casilla a moverse
+        objetoSiguiCasilla = siguienteCasilla.getObjeto(); // toma objeto de la siguiente casilla a moverse
         // llama funcion atacar() en caso de que la sigiuenteCasilla no sea null
-        if (objetoEncontrado != null){
-            if (siguienteCasilla.getObjeto() instanceof Organismo){
-                Organismo organismoAAtacar = (Organismo) siguienteCasilla.getObjeto();
+        if (objetoSiguiCasilla != null){
+            if (objetoSiguiCasilla instanceof OrganismoJugador){
+                // le asigna jugando false porque se comio al organismoJugador
+//                ((OrganismoJugador) objetoSiguiCasilla).setJugadorJugando(false);
+                jugando = false;
+            } else if (objetoSiguiCasilla instanceof Organismo){
+                Organismo organismoAAtacar = (Organismo) objetoSiguiCasilla;
                 if (organismo.atacar(organismoAAtacar)){
                     eliminarOrganismo(organismoAAtacar);
                 }
 
-            } else if (objetoEncontrado instanceof AlimentoEnergia) {
-                AlimentoEnergia alimentoAComer = (AlimentoEnergia) siguienteCasilla.getObjeto();
+            } else if (objetoSiguiCasilla instanceof AlimentoEnergia) {
+                AlimentoEnergia alimentoAComer = (AlimentoEnergia) objetoSiguiCasilla;
                 organismo.atacar(alimentoAComer);
                 eliminarAlimento(alimentoAComer);
-            } else if (objetoEncontrado instanceof AlimentoVelocidad) {
-                AlimentoVelocidad alimentoAComer = (AlimentoVelocidad) siguienteCasilla.getObjeto();
+            } else if (objetoSiguiCasilla instanceof AlimentoVelocidad) {
+                AlimentoVelocidad alimentoAComer = (AlimentoVelocidad) objetoSiguiCasilla;
                 organismo.atacar(alimentoAComer);
                 eliminarAlimento(alimentoAComer);
-            } else if (objetoEncontrado instanceof AlimentoVision) {
-                AlimentoVision alimentoAComer = (AlimentoVision) siguienteCasilla.getObjeto();
+            } else if (objetoSiguiCasilla instanceof AlimentoVision) {
+                AlimentoVision alimentoAComer = (AlimentoVision) objetoSiguiCasilla;
                 organismo.atacar(alimentoAComer);
                 eliminarAlimento(alimentoAComer);
             }
@@ -323,7 +319,6 @@ public class Mapa implements Constantes{
         siguienteCasilla.setObjeto(organismo);
         siguienteCasilla.boton.setIcon(new ImageIcon(imagenJugador.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
         organismo.setPosition(siguienteMovimiento[0], siguienteMovimiento[1]);
-        return objetoEncontrado;
     }
 
     public int[] busqueda(OrganismoVelocidad o){
@@ -331,18 +326,18 @@ public class Mapa implements Constantes{
         boolean buscarColInicial = true, buscarColFinal = true;
         int[] indiceObjetoEncontrado = {o.pos[0], o.pos[1]};
         // distancia maxima que puede haber entre puntos
-        distanciaPuntos = Math.sqrt(Math.pow(matriz.length, 2) + Math.pow(matriz[0].length, 2));
+        double distanciaPuntos = Math.sqrt(Math.pow(matriz.length, 2) + Math.pow(matriz[0].length, 2));
 
         // contador de busqueda que determina en que momento detenerse con base a la vision del organismo
-        contBusqueda = 0;
+        int contBusqueda = 0;
 
         // fila donde inciara y terminara busqueda
-        filaInicial = o.pos[0] - 1;
-        filaFinal = o.pos[0] + 1;
+        int filaInicial = o.pos[0] - 1;
+        int filaFinal = o.pos[0] + 1;
 
         // columna donde iniciara y terminara busqueda
-        columnaInicial = o.pos[1] - 1;
-        columnaFinal = o.pos[1] + 1;
+        int columnaInicial = o.pos[1] - 1;
+        int columnaFinal = o.pos[1] + 1;
 
         // flags indican si es necesario buscar en esas filas/columnas
         if (filaInicial < 0) {
@@ -481,18 +476,18 @@ public class Mapa implements Constantes{
         int[] indiceObjetoEncontrado = {o.pos[0], o.pos[1]};
 
         // distancia maxima que puede haber entre puntos
-        distanciaPuntos = Math.sqrt(Math.pow(matriz.length, 2) + Math.pow(matriz[0].length, 2));
+        double distanciaPuntos = Math.sqrt(Math.pow(matriz.length, 2) + Math.pow(matriz[0].length, 2));
 
         // contador de busqueda que determina en que momento detenerse con base a la vision del organismo
-        contBusqueda = 0;
+        int contBusqueda = 0;
 
         // fila donde inciara y terminara busqueda
-        filaInicial = o.pos[0] - 1;
-        filaFinal = o.pos[0] + 1;
+        int filaInicial = o.pos[0] - 1;
+        int filaFinal = o.pos[0] + 1;
 
         // columna donde iniciara y terminara busqueda
-        columnaInicial = o.pos[1] - 1;
-        columnaFinal = o.pos[1] + 1;
+        int columnaInicial = o.pos[1] - 1;
+        int columnaFinal = o.pos[1] + 1;
 
         // flags indican si es necesario buscar en esas filas/columnas
         if (filaInicial < 0) {
@@ -666,7 +661,12 @@ public class Mapa implements Constantes{
         return matriz[i][j];
     }
 
-    public int getIndiceAlimento(){
-        return indiceAlimento;
+    public boolean getJugando(){
+        return jugando;
+    }
+
+    // setters
+    public void setJugando(boolean _jugando){
+        this.jugando = _jugando;
     }
 }

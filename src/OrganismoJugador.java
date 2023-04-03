@@ -1,21 +1,26 @@
 import javax.swing.ImageIcon;
+import java.util.Random;
 
 public class OrganismoJugador extends Organismo{
+//    private boolean jugadorJugando = true;
+
     public OrganismoJugador(){
-        energia = 5;
+        edad = 1;
+        energia = 50;
         vision = 1;
         // PRUEBA
-        velocidad = 10;
-        edad = 1;
+        velocidad = 4;
         this.pos = new int[2];
     }
 
     public boolean atacar(Organismo organismoAComer) {
         if (energia == organismoAComer.energia && velocidad == organismoAComer.velocidad && edad == organismoAComer.edad){
+            rnd = new Random();
             ganadorAleatorio = rnd.nextBoolean();
             // en caso de que el random tome boolean 0 quiere decir que el aleatorio no favoreció al OrganismoJugador
             if (!ganadorAleatorio) {
                 /* Jugador pierde */
+//                jugadorJugando = false;
                 System.out.println("Jugador Pierde");
                 return false;
             } else {
@@ -31,6 +36,7 @@ public class OrganismoJugador extends Organismo{
             return true;
         } else {
             /* Jugador pierde */
+//            jugadorJugando = false;
             System.out.println("Jugador Pierde");
             return false;
         }
@@ -57,18 +63,30 @@ public class OrganismoJugador extends Organismo{
         this.velocidad += alimentoVelocidad.getAtributo();
     }
 
+    public void aumentarEdad(){
+        this.edad++;
+    }
+
+    public void disminuirEnergia(){
+        this.energia--;
+    }
+
     // getters
     public int[] getPosition(){
         return this.pos;
     }
 
     public String getInformacion(){
-        return "Organismo Jugador\n" + 
-        "\tEnergia: " + energia + "\n" + 
-        "\tVision: " + vision + "\n" + 
+        return "Organismo Jugador\n" +
+        "\tEnergia: " + energia + "\n" +
+        "\tVision: " + vision + "\n" +
         "\tVelocidad: " + velocidad + "\n" +
         "\tEdad: " + edad;
-    } 
+    }
+
+//    public boolean getJugadorJugando(){
+//        return jugadorJugando;
+//    }
 
     // setters
     public void setPosition(int i, int j){
@@ -80,4 +98,8 @@ public class OrganismoJugador extends Organismo{
         ImageIcon imagen = new ImageIcon("images/leon.png");
         return imagen;
     }
+
+//    public void setJugadorJugando(boolean _valor){
+//        this.jugadorJugando = _valor;
+//    }
 }

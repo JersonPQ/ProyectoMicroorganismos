@@ -20,4 +20,6 @@ public abstract class Organismo implements NPC{
     public abstract ImageIcon setImagen();
     public abstract int[] getPosition();
     public abstract String getInformacion();
+    public abstract void aumentarEdad();
+    public abstract void disminuirEnergia();
 }
