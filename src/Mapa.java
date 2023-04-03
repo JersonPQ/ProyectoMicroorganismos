@@ -7,12 +7,10 @@ public class Mapa implements Constantes{
     private Organismo[] organismos;
     private Alimento[] alimentos;
     private Casilla[][] matriz;
-    private Casilla casilla;
     private double valorAleatorio;
     private int posX;
     private int posY;
     private boolean jugando;
-    private Random rnd;
 
     public Mapa(){
         matriz = new Casilla[filasTotales][columnasTotales];
@@ -23,7 +21,7 @@ public class Mapa implements Constantes{
         //Inicializando cada Casilla en la matriz
         for (int i = 0; i < filasTotales; i++){
             for(int j = 0; j < columnasTotales; j++){
-                casilla = new Casilla();
+                Casilla casilla = new Casilla();
                 matriz[i][j] = casilla;
             }
         }
@@ -178,7 +176,7 @@ public class Mapa implements Constantes{
 
         // array para los indices del siguiente movimiento
         int[] siguienteMovimiento = new int[2];
-        rnd = new Random();
+        Random rnd = new Random();
         if (organismo instanceof OrganismoVelocidad) {
             System.out.println("Organismo velocidad en la posicion (" + posicionOrganismo[0] + ", " + posicionOrganismo[1] + ")");
             indiceEncontrado = busqueda((OrganismoVelocidad) organismo);

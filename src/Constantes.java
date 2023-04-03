@@ -7,7 +7,7 @@ public interface Constantes {
     final int minEnergia = 0; //Minima de Energia
     
     final int cantOrganismos = 20; //Cantidad de organismos 
-    final int cantAlimentos = 40; //Cantidad de alimentos
+    final int cantAlimentos = 80; //Cantidad de alimentos
     final int columnasTotales = 50; //Numero de columnas
     final int filasTotales = 50;  //Numero de filas
 }

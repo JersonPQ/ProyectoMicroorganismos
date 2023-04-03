@@ -53,6 +53,11 @@ public class OrganismoJugador extends Organismo{
 
     public void atacar(AlimentoEnergia alimentoEnergia){
         this.energia += alimentoEnergia.getAtributo();
+        // si velocidad es mayor que 1 entra, caso contrario no resta para mantener un minimo de velocidad de 1
+        if (velocidad > 1){
+            // al comer energia le resta velocidad
+            this.velocidad--;
+        }
     }
 
     public void atacar(AlimentoVision alimentoVision){
@@ -84,10 +89,6 @@ public class OrganismoJugador extends Organismo{
         "\tEdad: " + edad;
     }
 
-//    public boolean getJugadorJugando(){
-//        return jugadorJugando;
-//    }
-
     // setters
     public void setPosition(int i, int j){
         this.pos[0] = i;
@@ -98,8 +99,4 @@ public class OrganismoJugador extends Organismo{
         ImageIcon imagen = new ImageIcon("images/leon.png");
         return imagen;
     }
-
-//    public void setJugadorJugando(boolean _valor){
-//        this.jugadorJugando = _valor;
-//    }
 }

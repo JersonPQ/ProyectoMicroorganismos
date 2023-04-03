@@ -53,6 +53,11 @@ public class OrganismoVision extends Organismo{
 
     public void atacar(AlimentoEnergia alimentoEnergia){
         this.energia += alimentoEnergia.getAtributo();
+        // si velocidad es mayor que 1 entra, caso contrario no resta para mantener un minimo de velocidad de 1
+        if (velocidad > 1){
+            // al comer energia le resta velocidad
+            this.velocidad--;
+        }
     }
 
     public void atacar(AlimentoVision alimentoVision){

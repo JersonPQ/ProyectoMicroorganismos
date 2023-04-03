@@ -9,7 +9,6 @@ public class Interface {
     private JFrame ventana;
     private Mapa miMapa = new Mapa();
     OyenteTeclado oyente;
-    private ImageIcon imagen;
     private int contadorPasos;
     public Interface() throws InterruptedException{
         ventana = new JFrame();
@@ -50,7 +49,7 @@ public class Interface {
 
                 if(elemento.getObjeto() != null){
                     // comparar si la clase objetoComparando es algún tipo de organismo
-                    imagen = ((NPC) elemento.getObjeto()).setImagen();
+                    ImageIcon imagen = ((NPC) elemento.getObjeto()).setImagen();
                     (elemento.boton).setIcon(new ImageIcon(imagen.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
                 }
                 mapaPanel.add(elemento.boton);
@@ -61,15 +60,7 @@ public class Interface {
     }
 
     public void simular() throws InterruptedException{
-        Casilla[][] matriz = miMapa.getDimension();
-        Casilla casillaOrganismo;
-        Casilla casillaNuevoObjeto;
         Organismo[] organismos = miMapa.getOrganismos();
-        Alimento[] alimentos = miMapa.getAlimentos();
-        Object objetoComido;
-        int[] posicionOrganismo;
-        int[] posicionNuevoObjeto;
-        int indiceNuevoAlimento;
         int contadorTurno = 0;
         while (miMapa.getJugando()) {
             contadorPasos = 0;
@@ -80,7 +71,7 @@ public class Interface {
                 // turno de organismoJugador
                 System.out.println("Turno de jugador");
                 while (contadorPasos < organismoAMoverse.velocidad && organismoAMoverse.energia > 0 && miMapa.getJugando()){
-                    Thread.currentThread().sleep(5);
+                    Thread.sleep(5);
                 }
 
                 ventana.removeKeyListener(oyente); // se remueve el keyListener despues de completar los pasos
@@ -91,7 +82,7 @@ public class Interface {
                     ++contadorPasos;
                     // disminuye energia luego de moverse
                     organismoAMoverse.disminuirEnergia();
-                    Thread.currentThread().sleep(500);
+                    Thread.sleep(500);
                 }
             }
 
@@ -113,23 +104,6 @@ public class Interface {
             //Obteniendo el org jugador para poder moverlo con las teclas
             Organismo orgJugador = miMapa.getOrganismos()[0];
             ImageIcon imagenJugador = orgJugador.setImagen();
-            String infoOrgJugador = orgJugador.getInformacion();
-
-            // objeto comido al moverse
-            Object objetoComido;
-
-            // posicion del nuevoObjeto creado al comerse uno
-            int[] posicionNuevoObjeto;
-
-            // indice donde se crea el nuevo alimento
-            int indiceNuevoAlimento;
-
-            // casilla donde se ubica el nuevo objeto
-            Casilla casillaNuevoObjeto = null;
-
-            // obtener array de organismo y alimento
-            Organismo[] organismos = miMapa.getOrganismos();
-            Alimento[] alimentos = miMapa.getAlimentos();
 
             //Obtenes la posicion del jugador
             int posJugadorX = orgJugador.getPosition()[0];
@@ -193,8 +167,6 @@ public class Interface {
                 } else {
                     Casilla siguiCasilla = mapaDimension[posJugadorX][posJugadorY - 1];
                     if (siguiCasilla.getObjeto() != null) {
-                        // inicializacion de informacion en "" por necesidad que necesita estar inicializado
-                        String infoNuevoObjeto = "";
                         if (siguiCasilla.getObjeto() instanceof Organismo) {
                             Organismo organismoAAtacar = (Organismo) siguiCasilla.getObjeto();
                             if (orgJugador.atacar(organismoAAtacar)) {
@@ -238,8 +210,6 @@ public class Interface {
                 } else {
                     Casilla siguiCasilla = mapaDimension[posJugadorX + 1][posJugadorY];
                     if (siguiCasilla.getObjeto() != null) {
-                        // inicializacion de informacion en "" por necesidad que necesita estar inicializado
-                        String infoNuevoObjeto = "";
                         if (siguiCasilla.getObjeto() instanceof Organismo) {
                             Organismo organismoAAtacar = (Organismo) siguiCasilla.getObjeto();
                             if (orgJugador.atacar(organismoAAtacar)) {
@@ -283,8 +253,6 @@ public class Interface {
                 } else {
                     Casilla siguiCasilla = mapaDimension[posJugadorX][posJugadorY + 1];
                     if (siguiCasilla.getObjeto() != null) {
-                        // inicializacion de informacion en "" por necesidad que necesita estar inicializado
-                        String infoNuevoObjeto = "";
                         if (siguiCasilla.getObjeto() instanceof Organismo) {
                             Organismo organismoAAtacar = (Organismo) siguiCasilla.getObjeto();
                             if (orgJugador.atacar(organismoAAtacar)) {
