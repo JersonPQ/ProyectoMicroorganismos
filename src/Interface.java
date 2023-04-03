@@ -463,7 +463,6 @@ public class Interface {
                             ventana.requestFocus();
                         }
                     });
-
                     ++contadorPasos;
                 }
             }
