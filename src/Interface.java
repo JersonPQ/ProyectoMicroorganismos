@@ -7,13 +7,14 @@ import java.awt.event.KeyEvent;
 
 public class Interface {
     private JFrame ventana;
-    private Mapa miMapa = new Mapa();
+    private Mapa miMapa;
     OyenteTeclado oyente;
     private int contadorPasos;
-    public Interface() throws InterruptedException{
+    public Interface(int organismos, int alimentos, int matriz) throws InterruptedException{
         ventana = new JFrame();
         ventana.setTitle("Proyecto POO | Darío y Jerson");
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        miMapa = new Mapa(organismos, alimentos, matriz);
         oyente = new OyenteTeclado();
 
         addComponentes();

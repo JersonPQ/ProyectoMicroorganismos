@@ -3,7 +3,7 @@ import java.awt.*;
 import java.util.Arrays;
 import java.util.Random;
 
-public class Mapa implements Constantes{
+public class Mapa{
     private Organismo[] organismos;
     private Alimento[] alimentos;
     private Casilla[][] matriz;
@@ -12,15 +12,15 @@ public class Mapa implements Constantes{
     private int posY;
     private boolean jugando;
 
-    public Mapa(){
-        matriz = new Casilla[filasTotales][columnasTotales];
+    public Mapa(int cantOrganismos, int cantAlimentos, int tamanoMatriz){
+        matriz = new Casilla[tamanoMatriz][tamanoMatriz];
         alimentos = new Alimento[cantAlimentos];
         organismos = new Organismo[cantOrganismos];
         jugando = true;
 
         //Inicializando cada Casilla en la matriz
-        for (int i = 0; i < filasTotales; i++){
-            for(int j = 0; j < columnasTotales; j++){
+        for (int i = 0; i < tamanoMatriz; i++){
+            for(int j = 0; j < tamanoMatriz; j++){
                 Casilla casilla = new Casilla();
                 matriz[i][j] = casilla;
             }
