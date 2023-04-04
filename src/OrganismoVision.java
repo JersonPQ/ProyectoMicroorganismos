@@ -6,7 +6,7 @@ public class OrganismoVision extends Organismo{
     public OrganismoVision(){
         edad = 1;
         energia = 50;
-        vision = 5;
+        vision = 2;
         // PRUEBA
         velocidad = 4;
         this.pos = new int[2];

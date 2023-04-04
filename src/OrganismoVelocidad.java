@@ -6,7 +6,7 @@ public class OrganismoVelocidad extends Organismo{
     public OrganismoVelocidad(){
         edad = 1;
         energia = 50;
-        vision = 5;
+        vision = 2;
         // PRUEBA
         velocidad = 4;
         this.pos = new int[2];
