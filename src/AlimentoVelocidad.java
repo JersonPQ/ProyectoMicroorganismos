@@ -4,7 +4,7 @@ public class AlimentoVelocidad extends Alimento{
     private int velocidad;
 
     public AlimentoVelocidad(){
-        velocidad = 1;
+        velocidad = Configuracion.velocidad;
         this.pos = new int[2];
     }
 

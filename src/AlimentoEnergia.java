@@ -4,7 +4,7 @@ public class AlimentoEnergia extends Alimento{
     private int energia;
 
     public AlimentoEnergia(){
-        energia = 1;
+        energia = Configuracion.energia;
         this.pos = new int[2];
     }
 

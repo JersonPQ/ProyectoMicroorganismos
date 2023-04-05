@@ -9,11 +9,12 @@ public class OrganismoJugador extends Organismo{
         energia = 50;
         vision = 1;
         // PRUEBA
-        velocidad = 4;
+        velocidad = 10;
         this.pos = new int[2];
     }
 
     public boolean atacar(Organismo organismoAComer) {
+        boolean ganador;
         if (energia == organismoAComer.energia && velocidad == organismoAComer.velocidad && edad == organismoAComer.edad){
             rnd = new Random();
             ganadorAleatorio = rnd.nextBoolean();
@@ -22,24 +23,38 @@ public class OrganismoJugador extends Organismo{
                 /* Jugador pierde */
 //                jugadorJugando = false;
                 System.out.println("Jugador Pierde");
-                return false;
+                ganador = false;
             } else {
                 this.energia += (organismoAComer.energia) / 2;
                 this.vision += (organismoAComer.vision) / 2;
                 this.velocidad += (organismoAComer.velocidad) / 2;
-                return true;
+                ganador =  true;
             }
         } else if (comprobarAtaque(organismoAComer)) {
             this.energia += (organismoAComer.energia) / 2;
             this.vision += (organismoAComer.vision) / 2;
             this.velocidad += (organismoAComer.velocidad) / 2;
-            return true;
+            ganador = true;
         } else {
             /* Jugador pierde */
 //            jugadorJugando = false;
             System.out.println("Jugador Pierde");
-            return false;
+            ganador = false;
         }
+
+        //Aqui se valida que no se haya pasado del tope de maximo de stats
+        if(ganador){
+            if(this.energia > Configuracion.maxEnergia){
+                this.energia = Configuracion.maxEnergia;
+            }
+            if(this.vision > Configuracion.maxVision){
+                this.vision = Configuracion.maxVision;
+            }
+            if(this.velocidad > Configuracion.maxVelocidad){
+                this.velocidad = Configuracion.maxVelocidad;
+            }
+        }
+        return ganador;
     }
 
     public boolean comprobarAtaque(Organismo organismoAComer){
@@ -52,7 +67,12 @@ public class OrganismoJugador extends Organismo{
     }
 
     public void atacar(AlimentoEnergia alimentoEnergia){
-        this.energia += alimentoEnergia.getAtributo();
+        if(this.energia + alimentoEnergia.getAtributo() > Configuracion.maxEnergia){
+            this.energia = Configuracion.maxEnergia;
+        }
+        else{
+            this.energia += alimentoEnergia.getAtributo();
+        }
         // si velocidad es mayor que 1 entra, caso contrario no resta para mantener un minimo de velocidad de 1
         if (velocidad > 1){
             // al comer energia le resta velocidad
@@ -61,11 +81,21 @@ public class OrganismoJugador extends Organismo{
     }
 
     public void atacar(AlimentoVision alimentoVision){
-        this.vision += alimentoVision.getAtributo();
+        if(this.vision + alimentoVision.getAtributo()  > Configuracion.maxVision){
+            this.vision = Configuracion.maxVision;
+        }
+        else{
+            this.vision += alimentoVision.getAtributo();
+        }
     }
 
     public void atacar(AlimentoVelocidad alimentoVelocidad){
-        this.velocidad += alimentoVelocidad.getAtributo();
+        if(this.velocidad + alimentoVelocidad.getAtributo() > Configuracion.maxVelocidad){
+            this.velocidad = Configuracion.maxVelocidad;
+        }
+        else{
+            this.velocidad += alimentoVelocidad.getAtributo();
+        }
     }
 
     public void aumentarEdad(){

@@ -4,7 +4,7 @@ public class AlimentoVision extends Alimento{
     private int vision;
 
     public AlimentoVision(){
-        vision = 1;
+        vision = Configuracion.vision;
         this.pos = new int[2];
     }
 

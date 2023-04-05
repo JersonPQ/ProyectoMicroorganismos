@@ -2,10 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
-public class VentanaConfiguracion {
+public class Configuracion {
     private JFrame Ventana;
     private JLabel Titulo;
     private JLabel labelMaxEnergy;
@@ -14,23 +12,33 @@ public class VentanaConfiguracion {
     private JLabel labelMatriz;
     private JLabel labelOrganismos;
     private JLabel labelAlimentos;
+    private JLabel labelEnergia;
+    private JLabel labelVelocidad;
+    private JLabel labelVision;
     private JComboBox<Integer> comboMaxEnergy;
     private JComboBox<Integer> comboMaxVelocidad;
     private JComboBox<Integer> comboMaxVision;
     private JComboBox<Integer> comboMatriz;
     private JComboBox<Integer> comboOrganismos;
     private JComboBox<Integer> comboAlimentos;
+    private JComboBox<Integer> comboEnergia;
+    private JComboBox<Integer> comboVelocidad;
+    private JComboBox<Integer> comboVision;
     private JButton botonJuego;
     private Interface juego;
     private boolean bandera = false;
-    int maxEnergia;
-    int maxVelocidad;
-    int maxVision;
+    static int maxEnergia;
+    static int maxVelocidad;
+    static int maxVision;
+    static int energia;
+    static int velocidad;
+    static int vision;
+
     int tamanoMatriz;
     int cantOrganismos;
     int cantAlimentos;
 
-    public VentanaConfiguracion() throws InterruptedException{
+    public Configuracion() throws InterruptedException{
         //Ponemos las configuraciones básicas a la ventan
         Ventana = new JFrame("Ventana de configuración");
         Ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -64,6 +72,9 @@ public class VentanaConfiguracion {
         comboMatriz = new JComboBox<Integer>();
         comboOrganismos = new JComboBox<Integer>();
         comboAlimentos = new JComboBox<Integer>();
+        comboEnergia = new JComboBox<Integer>();
+        comboVelocidad = new JComboBox<Integer>();
+        comboVision = new JComboBox<Integer>();
 
         //Espaciadores
         Component espaciadorBoton = Box.createVerticalStrut(10);
@@ -103,7 +114,7 @@ public class VentanaConfiguracion {
 
         //Items del comboOrganismos
         comboOrganismos.addItem(40);
-        comboOrganismos.addItem(25);
+        comboOrganismos.addItem(45);
         comboOrganismos.addItem(30);
         centro.add(comboOrganismos);
 
@@ -112,6 +123,25 @@ public class VentanaConfiguracion {
         comboAlimentos.addItem(45);
         comboAlimentos.addItem(50);
         centro.add(comboAlimentos);
+
+        //Items del comboEnergia
+        comboEnergia.addItem(1);
+        comboEnergia.addItem(2);
+        comboEnergia.addItem(3);
+        centro.add(comboEnergia);
+
+        //Items del comboVelocidad
+        comboVelocidad.addItem(1);
+        comboVelocidad.addItem(2);
+        comboVelocidad.addItem(3);
+        centro.add(comboVelocidad);
+
+        //Items del comboVision
+        comboVision.addItem(1);
+        comboVision.addItem(2);
+        comboVision.addItem(3);
+        centro.add(comboVision);
+
         centro.add(espaciadorBoton);
         centro.add(botonJuego);
 
@@ -122,6 +152,9 @@ public class VentanaConfiguracion {
         labelMatriz = new JLabel("Tamaño de la matriz:");
         labelOrganismos = new JLabel("Cantidad de organismos:");
         labelAlimentos = new JLabel("Cantidad de alimentos:");
+        labelEnergia = new JLabel("Cantidad de energia por alimento:");
+        labelVelocidad = new JLabel("Cantidad de velocidad por alimento:");
+        labelVision = new JLabel("Cantidad de vision por alimento:");
 
         //Colocamos fuentes y tamaño a los label
         labelMaxEnergy.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -130,6 +163,9 @@ public class VentanaConfiguracion {
         labelMatriz.setFont(new Font("Arial", Font.PLAIN, 20));
         labelOrganismos.setFont(new Font("Arial", Font.PLAIN, 20));
         labelAlimentos.setFont(new Font("Arial", Font.PLAIN, 20));
+        labelEnergia.setFont(new Font("Arial", Font.PLAIN, 20));
+        labelVelocidad.setFont(new Font("Arial", Font.PLAIN, 20));
+        labelVision.setFont(new Font("Arial", Font.PLAIN, 20));
 
         izquierda.add(labelMaxEnergy);
         izquierda.add(labelMaxVelocidad);
@@ -137,6 +173,9 @@ public class VentanaConfiguracion {
         izquierda.add(labelMatriz);
         izquierda.add(labelOrganismos);
         izquierda.add(labelAlimentos);
+        izquierda.add(labelEnergia);
+        izquierda.add(labelVelocidad);
+        izquierda.add(labelVision);
 
         Ventana.add(izquierda);
         Ventana.add(centro);
@@ -154,6 +193,9 @@ public class VentanaConfiguracion {
             tamanoMatriz = (int)comboMatriz.getSelectedItem();
             cantOrganismos = (int)comboOrganismos.getSelectedItem();
             cantAlimentos = (int)comboAlimentos.getSelectedItem();
+            energia = (int)comboEnergia.getSelectedItem();
+            velocidad = (int)comboVelocidad.getSelectedItem();
+            vision = (int)comboVision.getSelectedItem();
             bandera = true;
         }
     }
