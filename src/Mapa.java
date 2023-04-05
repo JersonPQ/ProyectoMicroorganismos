@@ -87,22 +87,21 @@ public class Mapa{
         System.out.println(organismos[0].getPosition()[0] + " - " + organismos[0].getPosition()[1]);
     }
 
-    public void crearOrganismo(){
-        int indiceOrganismo = organismos.length - 1;
+    public void crearOrganismo(int _indiceOrganismo){;
         valorAleatorio = Math.random()*(1-0)+0;
         if(valorAleatorio < 0.5){
-            organismos[indiceOrganismo] = new OrganismoVelocidad();
+            organismos[_indiceOrganismo] = new OrganismoVelocidad();
         }
         else{
-            organismos[indiceOrganismo] = new OrganismoVision();
+            organismos[_indiceOrganismo] = new OrganismoVision();
         }
 
         while (true){
             posX = (int)(Math.floor(Math.random()* (matriz.length - 1)));
             posY = (int)(Math.floor(Math.random()* (matriz.length - 1)));
             if(matriz[posX][posY].getObjeto() == null){
-                matriz[posX][posY].setObjeto(organismos[indiceOrganismo]);
-                organismos[indiceOrganismo].setPosition(posX, posY);
+                matriz[posX][posY].setObjeto(organismos[_indiceOrganismo]);
+                organismos[_indiceOrganismo].setPosition(posX, posY);
                 ImageIcon imagen = ((NPC) matriz[posX][posY].getObjeto()).setImagen();
                 (matriz[posX][posY].boton).setIcon(new ImageIcon(imagen.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
                 break;
@@ -112,12 +111,8 @@ public class Mapa{
 
     public void eliminarOrganismo(Organismo organismoEliminar){
         int indiceOrganismo = Arrays.asList(organismos).indexOf(organismoEliminar);
-        // mueve los organismos siguientes del organismo eliminado un espacio a la izquierda
-        for (int i = indiceOrganismo; i < organismos.length - 1; i++) {
-            organismos[i] = organismos[i + 1];
-        }
-
-        crearOrganismo();
+        System.out.println("ELIMINA ORGANISMO EN POSICION (" + indiceOrganismo + ")");
+        crearOrganismo(indiceOrganismo);
     }
 
     public void crearAlimento(int _indiceAlimento){
@@ -231,9 +226,30 @@ public class Mapa{
                 huir = false;
             } else if (casillaObjetoEncontrado.getObjeto() instanceof Organismo && !(organismo.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto())) && posicionOrganismo[0] < indiceEncontrado[0]){
                 --siguiCasillaX;
+                if (siguiCasillaX < 0){
+                    // le suma 2 para que en lugar de irse para la arriba y se salga de la matriz, toma como posible
+                    // movimiento hacia abajo
+                    siguiCasillaX += 2;
+                }
+
                 huir = true;
             } else if (casillaObjetoEncontrado.getObjeto() instanceof Organismo && !(organismo.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto())) && posicionOrganismo[0] > indiceEncontrado[0]){
                 ++siguiCasillaX;
+                if (siguiCasillaX > matriz.length - 1){
+                    // le resta 2 para que en lugar de irse para abajo y se salga de la matriz, toma como posible
+                    // movimiento hacia arriba
+                    siguiCasillaX -= 2;
+                }
+
+                huir = true;
+            } else if (casillaObjetoEncontrado.getObjeto() instanceof Organismo && !(organismo.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto())) && posicionOrganismo[0] == indiceEncontrado[0]) {
+                // toma decision de movimiento con base si esta en la primera mitad de filas de la matriz o en la segunda
+                if (posicionOrganismo[0] > ((matriz.length) - 1) / 2){
+                    --siguiCasillaX;
+                } else {
+                    ++siguiCasillaX;
+                }
+
                 huir = true;
             }
 
@@ -246,9 +262,30 @@ public class Mapa{
                 huir = false;
             } else if (casillaObjetoEncontrado.getObjeto() instanceof Organismo && !(organismo.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto())) && posicionOrganismo[1] < indiceEncontrado[1]){
                 --siguiCasillaY;
+                if (siguiCasillaY < 0){
+                    // le suma 2 para que en lugar de irse para la izquierda y se salga de la matriz, toma como posible
+                    // movimiento a la derecha
+                    siguiCasillaY += 2;
+                }
+
                 huir = true;
             } else if (casillaObjetoEncontrado.getObjeto() instanceof Organismo && !(organismo.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto())) && posicionOrganismo[1] > indiceEncontrado[1]){
                 ++siguiCasillaY;
+                if (siguiCasillaY > matriz.length - 1){
+                    // le resta 2 para que en lugar de irse para la derecha y se salga de la matriz, toma como posible
+                    // movimiento a la izquierda
+                    siguiCasillaY -= 2;
+                }
+
+                huir = true;
+            } else if (casillaObjetoEncontrado.getObjeto() instanceof Organismo && !(organismo.comprobarAtaque((Organismo) casillaObjetoEncontrado.getObjeto())) && posicionOrganismo[1] == indiceEncontrado[1]) {
+                // toma decision de movimiento con base si esta en la primera mitad de columnas de la matriz o en la segunda
+                if (posicionOrganismo[1] > ((matriz[0].length) - 1) / 2){
+                    --siguiCasillaY;
+                } else {
+                    ++siguiCasillaY;
+                }
+
                 huir = true;
             }
 

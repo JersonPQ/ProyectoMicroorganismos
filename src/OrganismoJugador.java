@@ -6,16 +6,16 @@ public class OrganismoJugador extends Organismo{
 
     public OrganismoJugador(){
         edad = 1;
-        energia = 50;
+        energia = Configuracion.maxEnergia;
         vision = 5;
         // PRUEBA
-        velocidad = 4;
+        velocidad = 10;
         this.pos = new int[2];
     }
 
     public boolean atacar(Organismo organismoAComer) {
         boolean ganador;
-        if (energia == organismoAComer.energia && velocidad == organismoAComer.velocidad && edad == organismoAComer.edad){
+        if (this.energia == organismoAComer.energia && this.velocidad == organismoAComer.velocidad && this.edad == organismoAComer.edad){
             rnd = new Random();
             ganadorAleatorio = rnd.nextBoolean();
             // en caso de que el random tome boolean 0 quiere decir que el aleatorio no favoreció al OrganismoJugador
@@ -59,7 +59,7 @@ public class OrganismoJugador extends Organismo{
 
     public boolean comprobarAtaque(Organismo organismoAComer){
         // evalua si organismo puede comer a organismoAComer
-        if (energia > organismoAComer.energia || (energia == organismoAComer.energia && velocidad > organismoAComer.velocidad) || (energia == organismoAComer.energia && velocidad == organismoAComer.velocidad && edad > organismoAComer.edad)) {
+        if (this.energia > organismoAComer.energia || (this.energia == organismoAComer.energia && this.velocidad > organismoAComer.velocidad) || (this.energia == organismoAComer.energia && this.velocidad == organismoAComer.velocidad && this.edad > organismoAComer.edad)) {
             return true;
         } else {
             return false;
@@ -131,27 +131,22 @@ public class OrganismoJugador extends Organismo{
     }
 
     public void perderVision(){
-        if( 5 < this.edad && this.edad < 10){
+        if( 5 < this.edad && this.edad <= 10){
             this.vision -= 1;
-        }
-        if( 10 < this.edad && this.edad < 15){
+        } else if ( 10 < this.edad && this.edad <= 20){
             this.vision -= 2;
-        }
-        if( 20 < this.edad && this.edad < 25){
+        } else if ( 20 < this.edad && this.edad <= 30){
             this.vision -= 3;
-        }
-        if( 30 < this.edad && this.edad < 35){
+        } else if ( 30 < this.edad && this.edad <= 35){
             this.vision -= 4;
-        }
-        if( 35 < this.edad && this.edad < 40){
+        } else if ( 35 < this.edad && this.edad <= 40){
             this.vision -= 5;
-        }
-        if( 40 < this.edad){
+        } else if ( 40 < this.edad){
             this.vision -= 6;
         }
-        //Este es para valida que no baje de cero
-        if(this.edad < 0){
-            this.edad = 0;
+        //Este es para validar que no baje de cero
+        if(this.edad < 1){
+            this.edad = 1;
         }
     }
 }
