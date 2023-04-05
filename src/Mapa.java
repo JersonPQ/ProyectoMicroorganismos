@@ -29,8 +29,8 @@ public class Mapa{
         // incializar y colocar organismoJugador
         organismos[0] = new OrganismoJugador();
         while (true) {
-            posX = (int)(Math.floor(Math.random()*49+0));
-            posY = (int)(Math.floor(Math.random()*49+0));
+            posX = (int)(Math.floor(Math.random()* (tamanoMatriz - 1)));
+            posY = (int)(Math.floor(Math.random()* (tamanoMatriz - 1)));
             if(matriz[posX][posY].getObjeto() == null){
                 matriz[posX][posY].setObjeto(organismos[0]);
                 organismos[0].setPosition(posX, posY);
@@ -50,8 +50,8 @@ public class Mapa{
             }
 
             while (true){
-                posX = (int)(Math.floor(Math.random()*49+0));
-                posY = (int)(Math.floor(Math.random()*49+0));
+                posX = (int)(Math.floor(Math.random()* (tamanoMatriz - 1)));
+                posY = (int)(Math.floor(Math.random()* (tamanoMatriz - 1)));
                 if(matriz[posX][posY].getObjeto() == null){
                     matriz[posX][posY].setObjeto(organismos[i]);
                     organismos[i].setPosition(posX, posY);
@@ -74,8 +74,8 @@ public class Mapa{
             }
 
             while (true){
-                posX = (int)(Math.floor(Math.random()*49+0));
-                posY = (int)(Math.floor(Math.random()*49+0));
+                posX = (int)(Math.floor(Math.random()* (tamanoMatriz - 1)));
+                posY = (int)(Math.floor(Math.random()* (tamanoMatriz - 1)));
                 if(matriz[posX][posY].getObjeto() == null){
                     matriz[posX][posY].setObjeto(alimentos[i]);
                     alimentos[i].setPosition(posX, posY);
@@ -98,8 +98,8 @@ public class Mapa{
         }
 
         while (true){
-            posX = (int)(Math.floor(Math.random()*49+0));
-            posY = (int)(Math.floor(Math.random()*49+0));
+            posX = (int)(Math.floor(Math.random()* (matriz.length - 1)));
+            posY = (int)(Math.floor(Math.random()* (matriz.length - 1)));
             if(matriz[posX][posY].getObjeto() == null){
                 matriz[posX][posY].setObjeto(organismos[indiceOrganismo]);
                 organismos[indiceOrganismo].setPosition(posX, posY);
@@ -133,8 +133,8 @@ public class Mapa{
         }
 
         while (true){
-            posX = (int)(Math.floor(Math.random()*49+0));
-            posY = (int)(Math.floor(Math.random()*49+0));
+            posX = (int)(Math.floor(Math.random()* (matriz.length - 1)));
+            posY = (int)(Math.floor(Math.random()* (matriz.length - 1)));
             if(matriz[posX][posY].getObjeto() == null){
                 matriz[posX][posY].setObjeto(alimentos[_indiceAlimento]);
                 alimentos[_indiceAlimento].setPosition(posX, posY);
@@ -935,10 +935,6 @@ public class Mapa{
 
     public Organismo[] getOrganismos(){
         return organismos;
-    }
-
-    public Alimento[] getAlimentos(){
-        return alimentos;
     }
 
     public Casilla getCasilla(int i, int j){

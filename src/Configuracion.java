@@ -95,39 +95,39 @@ public class Configuracion {
         centro.add(comboMaxEnergy);
 
         //Items del comboMaxVelocidad
-        comboMaxVelocidad.addItem(30);
-        comboMaxVelocidad.addItem(40);
-        comboMaxVelocidad.addItem(50);
+        comboMaxVelocidad.addItem(10);
+        comboMaxVelocidad.addItem(15);
+        comboMaxVelocidad.addItem(20);
         centro.add(comboMaxVelocidad);
 
         //Items del comboMaxVision
-        comboMaxVision.addItem(30);
-        comboMaxVision.addItem(40);
-        comboMaxVision.addItem(50);
+        comboMaxVision.addItem(5);
+        comboMaxVision.addItem(10);
+        comboMaxVision.addItem(15);
         centro.add(comboMaxVision);
 
         //Items del comboMatriz
-        comboMatriz.addItem(50);
-        comboMatriz.addItem(55);
-        comboMatriz.addItem(60);
+        for (int i = 50; i <= 60; i = i + 5) {
+            comboMatriz.addItem(i);
+        }
         centro.add(comboMatriz);
 
         //Items del comboOrganismos
-        comboOrganismos.addItem(40);
-        comboOrganismos.addItem(45);
-        comboOrganismos.addItem(30);
+        for (int i = 30; i <= 50; i = i + 5) {
+            comboOrganismos.addItem(i);
+        }
         centro.add(comboOrganismos);
 
         //Items del comboAlimentos
-        comboAlimentos.addItem(40);
-        comboAlimentos.addItem(45);
-        comboAlimentos.addItem(50);
+        for (int i = 40; i <= 100; i = i + 5) {
+            comboAlimentos.addItem(i);
+        }
         centro.add(comboAlimentos);
 
         //Items del comboEnergia
-        comboEnergia.addItem(1);
-        comboEnergia.addItem(2);
-        comboEnergia.addItem(3);
+        for (int i = 1; i <= 5; i++) {
+            comboEnergia.addItem(i);
+        }
         centro.add(comboEnergia);
 
         //Items del comboVelocidad
@@ -152,7 +152,7 @@ public class Configuracion {
         labelMatriz = new JLabel("Tamaño de la matriz:");
         labelOrganismos = new JLabel("Cantidad de organismos:");
         labelAlimentos = new JLabel("Cantidad de alimentos:");
-        labelEnergia = new JLabel("Cantidad de energia por alimento:");
+        labelEnergia = new JLabel("Cantidad maxima de energia por alimento:");
         labelVelocidad = new JLabel("Cantidad de velocidad por alimento:");
         labelVision = new JLabel("Cantidad de vision por alimento:");
 

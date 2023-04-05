@@ -27,9 +27,10 @@ public class Interface {
     }
 
     public void addComponentes(){
-        //Separando el panel en 50x50
         JPanel mapaPanel = new JPanel();
-        mapaPanel.setLayout(new GridLayout(50, 50));
+        int tamanoMatriz = miMapa.getDimension().length;
+        //Separando el panel en tamanoMatriz X tamanoMatriz
+        mapaPanel.setLayout(new GridLayout(tamanoMatriz, tamanoMatriz));
 
         //Ingresando los animales
         Casilla[][] dimensionMatriz = miMapa.getDimension();        
@@ -87,7 +88,7 @@ public class Interface {
                     ++contadorPasos;
                     // disminuye energia luego de moverse
                     organismoAMoverse.disminuirEnergia();
-                    Thread.sleep(500);
+                    Thread.sleep(100);
                 }
             }
 
@@ -209,7 +210,7 @@ public class Interface {
                 }
             } else if (codigo == 's' || codigo == 'S') {
                 //En este se movera para abajo
-                if (posJugadorX >= 49) {
+                if (posJugadorX >= mapaDimension.length - 1) {
                     //Aqui se tira la advertencia de que no se puede mover para abajo
                     JOptionPane.showMessageDialog(null, "No se puede mover para esa dirección");
                 } else {
@@ -252,7 +253,7 @@ public class Interface {
                 }
             } else if (codigo == 'd' || codigo == 'D') {
                 //En este se movera para la derecha
-                if (posJugadorY >= 49) {
+                if (posJugadorY >= mapaDimension.length - 1) {
                     //Aqui se tira la advertencia de que no se puede mover para la derecha
                     JOptionPane.showMessageDialog(null, "No se puede mover para esa dirección");
                 } else {

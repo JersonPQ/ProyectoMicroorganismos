@@ -9,7 +9,7 @@ public class OrganismoJugador extends Organismo{
         energia = 50;
         vision = 1;
         // PRUEBA
-        velocidad = 10;
+        velocidad = 4;
         this.pos = new int[2];
     }
 
