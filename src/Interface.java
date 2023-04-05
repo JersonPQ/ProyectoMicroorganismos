@@ -66,13 +66,17 @@ public class Interface {
         while (miMapa.getJugando()) {
             contadorPasos = 0;
             Organismo organismoAMoverse = organismos[contadorTurno];
-            if (organismos[contadorTurno] instanceof OrganismoJugador){
+            if (organismoAMoverse instanceof OrganismoJugador && organismoAMoverse.energia > 0){
                 JOptionPane.showMessageDialog(null, "Turno del Jugador");
                 ventana.addKeyListener(oyente); // se anade el keyListener cuando es turno del jugador
                 // turno de organismoJugador
                 System.out.println("Turno de jugador");
                 while (contadorPasos < organismoAMoverse.velocidad && organismoAMoverse.energia > 0 && miMapa.getJugando()){
                     Thread.sleep(5);
+                }
+
+                if (organismoAMoverse.energia <= 0){
+                    JOptionPane.showMessageDialog(null, "¡Te has quedado sin energia!");
                 }
 
                 ventana.removeKeyListener(oyente); // se remueve el keyListener despues de completar los pasos

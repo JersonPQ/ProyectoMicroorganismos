@@ -317,6 +317,7 @@ public class Mapa{
         siguienteCasilla.setObjeto(organismo);
         siguienteCasilla.boton.setIcon(new ImageIcon(imagenJugador.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH)));
         organismo.setPosition(siguienteMovimiento[0], siguienteMovimiento[1]);
+        System.out.println("Siguiente casilla es (" + siguienteMovimiento[0] + ", " + siguienteMovimiento[1] + ")\n");
     }
 
     public int[] busqueda(OrganismoVelocidad o){
@@ -327,6 +328,8 @@ public class Mapa{
 
         // variable toma valor del objeto que esta en cada casilla al evaluar
         Object objetoEvaluando;
+
+        boolean encontradoEsOrganismo, encontradoEsAliEnergia, encontradoEsAliVel, encontradoEsAliVis;
 
         // distancia maxima que puede haber entre puntos
         double distanciaPuntos = Math.sqrt(Math.pow(matriz.length, 2) + Math.pow(matriz[0].length, 2));
@@ -376,30 +379,30 @@ public class Mapa{
                     // evalua si la posicion a evaluar es un Alimento o un Organismo y que la distancia entre el Organismo que realiza la busqueda
                     // y el Alimento u Organismo encontrado es menor
                     if (objetoEvaluando != null){
+                        encontradoEsOrganismo = objetoEncontrado instanceof Organismo;
+                        encontradoEsAliEnergia = objetoEncontrado instanceof AlimentoEnergia;
+                        encontradoEsAliVis = objetoEncontrado instanceof AlimentoVision;
+                        encontradoEsAliVel = objetoEncontrado instanceof AlimentoVelocidad;
                         distanciaObjetoEvaluando = Math.sqrt(Math.pow(filaInicial - o.pos[0], 2) + Math.pow(i - o.pos[1], 2));
-                        if (objetoEvaluando instanceof Organismo && distanciaPuntos > distanciaObjetoEvaluando){
+                        if (objetoEvaluando instanceof Organismo && ((encontradoEsOrganismo && distanciaPuntos > distanciaObjetoEvaluando) || !encontradoEsOrganismo)){
                             // toma valores para objeto organismo
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = filaInicial;
                             indiceObjetoEncontrado[1] = i;
-                        } else if ((!(objetoEncontrado instanceof Organismo) || objetoEncontrado == o) &&
-                                objetoEvaluando instanceof AlimentoEnergia && distanciaPuntos > distanciaObjetoEvaluando){
+                        } else if (objetoEvaluando instanceof AlimentoEnergia && ((encontradoEsAliEnergia && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia))){
                             // toma valores para alimento energia
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = filaInicial;
                             indiceObjetoEncontrado[1] = i;
-                        } else if ((!(objetoEncontrado instanceof Organismo || objetoEncontrado instanceof AlimentoEnergia) ||
-                                objetoEncontrado == o) && objetoEvaluando instanceof AlimentoVelocidad && distanciaPuntos > distanciaObjetoEvaluando){
+                        } else if (objetoEvaluando instanceof AlimentoVelocidad && ((encontradoEsAliVel && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia && !encontradoEsAliVel))){
                             // toma valores para alimento de velocidad
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = filaInicial;
                             indiceObjetoEncontrado[1] = i;
-                        } else if ((!(objetoEncontrado instanceof Organismo || objetoEncontrado instanceof AlimentoEnergia ||
-                                objetoEncontrado instanceof AlimentoVelocidad) || objetoEncontrado == o) &&
-                                objetoEvaluando instanceof AlimentoVision && distanciaPuntos > distanciaObjetoEvaluando){
+                        } else if (objetoEvaluando instanceof AlimentoVision && ((encontradoEsAliVis && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia && !encontradoEsAliVel && !encontradoEsAliVis))){
                             // toma valores para alimento vision
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
@@ -430,30 +433,30 @@ public class Mapa{
                     // evalua si la posicion a evaluar es un Alimento o un Organismo y que la distancia entre el Organismo que realiza la busqueda
                     // y el Alimento u Organismo encontrado es menor
                     if (objetoEvaluando != null) {
+                        encontradoEsOrganismo = objetoEncontrado instanceof Organismo;
+                        encontradoEsAliEnergia = objetoEncontrado instanceof AlimentoEnergia;
+                        encontradoEsAliVis = objetoEncontrado instanceof AlimentoVision;
+                        encontradoEsAliVel = objetoEncontrado instanceof AlimentoVelocidad;
                         distanciaObjetoEvaluando = Math.sqrt(Math.pow(i - o.pos[0], 2) + Math.pow(columnaFinal - o.pos[1], 2));
-                        if (objetoEvaluando instanceof Organismo && distanciaPuntos > distanciaObjetoEvaluando) {
+                        if (objetoEvaluando instanceof Organismo && ((encontradoEsOrganismo && distanciaPuntos > distanciaObjetoEvaluando) || !encontradoEsOrganismo)) {
                             // toma valores para objeto organismo
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = i;
                             indiceObjetoEncontrado[1] = columnaFinal;
-                        } else if ((!(objetoEncontrado instanceof Organismo) || objetoEncontrado == o) &&
-                                objetoEvaluando instanceof AlimentoEnergia && distanciaPuntos > distanciaObjetoEvaluando) {
+                        } else if (objetoEvaluando instanceof AlimentoEnergia && ((encontradoEsAliEnergia && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia))) {
                             // toma valores para alimento energia
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = i;
                             indiceObjetoEncontrado[1] = columnaFinal;
-                        } else if ((!(objetoEncontrado instanceof Organismo || objetoEncontrado instanceof AlimentoEnergia) ||
-                                objetoEncontrado == o) && objetoEvaluando instanceof AlimentoVelocidad && distanciaPuntos > distanciaObjetoEvaluando) {
+                        } else if (objetoEvaluando instanceof AlimentoVelocidad && ((encontradoEsAliVel && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia && !encontradoEsAliVel))) {
                             // toma valores para alimento de velocidad
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = i;
                             indiceObjetoEncontrado[1] = columnaFinal;
-                        } else if ((!(objetoEncontrado instanceof Organismo || objetoEncontrado instanceof AlimentoEnergia ||
-                                objetoEncontrado instanceof AlimentoVelocidad) || objetoEncontrado == o) &&
-                                objetoEvaluando instanceof AlimentoVision && distanciaPuntos > distanciaObjetoEvaluando) {
+                        } else if (objetoEvaluando instanceof AlimentoVision && ((encontradoEsAliVis && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia && !encontradoEsAliVel && !encontradoEsAliVis))){
                             // toma valores para alimento vision
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
@@ -483,30 +486,30 @@ public class Mapa{
                     // evalua si la posicion a evaluar es un Alimento o un Organismo y que la distancia entre el Organismo que realiza la busqueda
                     // y el Alimento u Organismo encontrado es menor
                     if (objetoEvaluando != null) {
+                        encontradoEsOrganismo = objetoEncontrado instanceof Organismo;
+                        encontradoEsAliEnergia = objetoEncontrado instanceof AlimentoEnergia;
+                        encontradoEsAliVis = objetoEncontrado instanceof AlimentoVision;
+                        encontradoEsAliVel = objetoEncontrado instanceof AlimentoVelocidad;
                         distanciaObjetoEvaluando = Math.sqrt(Math.pow(filaFinal - o.pos[0], 2) + Math.pow(i - o.pos[1], 2));
-                        if (objetoEvaluando instanceof Organismo && distanciaPuntos > distanciaObjetoEvaluando) {
+                        if (objetoEvaluando instanceof Organismo && ((encontradoEsOrganismo && distanciaPuntos > distanciaObjetoEvaluando) || !encontradoEsOrganismo)) {
                             // toma valores para objeto organismo
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = filaFinal;
                             indiceObjetoEncontrado[1] = i;
-                        } else if ((!(objetoEncontrado instanceof Organismo) || objetoEncontrado == o) &&
-                                objetoEvaluando instanceof AlimentoEnergia && distanciaPuntos > distanciaObjetoEvaluando) {
+                        } else if (objetoEvaluando instanceof AlimentoEnergia && ((encontradoEsAliEnergia && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia))) {
                             // toma valores para alimento energia
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = filaFinal;
                             indiceObjetoEncontrado[1] = i;
-                        } else if ((!(objetoEncontrado instanceof Organismo || objetoEncontrado instanceof AlimentoEnergia) ||
-                                objetoEncontrado == o) && objetoEvaluando instanceof AlimentoVelocidad && distanciaPuntos > distanciaObjetoEvaluando) {
+                        } else if (objetoEvaluando instanceof AlimentoVelocidad && ((encontradoEsAliVel && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia && !encontradoEsAliVel))) {
                             // toma valores para alimento de velocidad
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = filaFinal;
                             indiceObjetoEncontrado[1] = i;
-                        } else if ((!(objetoEncontrado instanceof Organismo || objetoEncontrado instanceof AlimentoEnergia ||
-                                objetoEncontrado instanceof AlimentoVelocidad) || objetoEncontrado == o) &&
-                                objetoEvaluando instanceof AlimentoVision && distanciaPuntos > distanciaObjetoEvaluando) {
+                        } else if (objetoEvaluando instanceof AlimentoVision && ((encontradoEsAliVis && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia && !encontradoEsAliVel && !encontradoEsAliVis))){
                             // toma valores para alimento vision
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
@@ -536,30 +539,30 @@ public class Mapa{
                     // evalua si la posicion a evaluar es un Alimento o un Organismo y que la distancia entre el Organismo que realiza la busqueda
                     // y el Alimento u Organismo encontrado es menor
                     if (objetoEvaluando != null) {
+                        encontradoEsOrganismo = objetoEncontrado instanceof Organismo;
+                        encontradoEsAliEnergia = objetoEncontrado instanceof AlimentoEnergia;
+                        encontradoEsAliVis = objetoEncontrado instanceof AlimentoVision;
+                        encontradoEsAliVel = objetoEncontrado instanceof AlimentoVelocidad;
                         distanciaObjetoEvaluando = Math.sqrt(Math.pow(i - o.pos[0], 2) + Math.pow(columnaInicial - o.pos[1], 2));
-                        if (objetoEvaluando instanceof Organismo && distanciaPuntos > distanciaObjetoEvaluando) {
+                        if (objetoEvaluando instanceof Organismo && ((encontradoEsOrganismo && distanciaPuntos > distanciaObjetoEvaluando) || !encontradoEsOrganismo)) {
                             // toma valores para objeto organismo
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = i;
                             indiceObjetoEncontrado[1] = columnaInicial;
-                        } else if ((!(objetoEncontrado instanceof Organismo) || objetoEncontrado == o) &&
-                                objetoEvaluando instanceof AlimentoEnergia && distanciaPuntos > distanciaObjetoEvaluando) {
+                        } else if (objetoEvaluando instanceof AlimentoEnergia && ((encontradoEsAliEnergia && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia))) {
                             // toma valores para alimento energia
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = i;
                             indiceObjetoEncontrado[1] = columnaInicial;
-                        } else if ((!(objetoEncontrado instanceof Organismo || objetoEncontrado instanceof AlimentoEnergia) ||
-                                objetoEncontrado == o) && objetoEvaluando instanceof AlimentoVelocidad && distanciaPuntos > distanciaObjetoEvaluando) {
+                        } else if (objetoEvaluando instanceof AlimentoVelocidad && ((encontradoEsAliVel && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia && !encontradoEsAliVel))) {
                             // toma valores para alimento de velocidad
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = i;
                             indiceObjetoEncontrado[1] = columnaInicial;
-                        } else if ((!(objetoEncontrado instanceof Organismo || objetoEncontrado instanceof AlimentoEnergia ||
-                                objetoEncontrado instanceof AlimentoVelocidad) || objetoEncontrado == o) &&
-                                objetoEvaluando instanceof AlimentoVision && distanciaPuntos > distanciaObjetoEvaluando) {
+                        } else if (objetoEvaluando instanceof AlimentoVision && ((encontradoEsAliVis && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia && !encontradoEsAliVel && !encontradoEsAliVis))){
                             // toma valores para alimento vision
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
@@ -604,7 +607,7 @@ public class Mapa{
             ++contBusqueda;
         }
 
-        // si no encuentra Alimento retorna la mismas posicion del Organismo
+        // si no encuentra Alimento retorna la misma posicion del Organismo
         return indiceObjetoEncontrado;
     }
 
@@ -616,6 +619,8 @@ public class Mapa{
 
         // variable toma valor del objeto que esta en cada casilla al evaluar
         Object objetoEvaluando;
+
+        boolean encontradoEsOrganismo, encontradoEsAliEnergia, encontradoEsAliVel, encontradoEsAliVis;
 
         // distancia maxima que puede haber entre puntos
         double distanciaPuntos = Math.sqrt(Math.pow(matriz.length, 2) + Math.pow(matriz[0].length, 2));
@@ -665,30 +670,30 @@ public class Mapa{
                     // evalua si la posicion a evaluar es un Alimento o un Organismo y que la distancia entre el Organismo que realiza la busqueda
                     // y el Alimento u Organismo encontrado es menor
                     if (objetoEvaluando != null) {
+                        encontradoEsOrganismo = objetoEncontrado instanceof Organismo;
+                        encontradoEsAliEnergia = objetoEncontrado instanceof AlimentoEnergia;
+                        encontradoEsAliVis = objetoEncontrado instanceof AlimentoVision;
+                        encontradoEsAliVel = objetoEncontrado instanceof AlimentoVelocidad;
                         distanciaObjetoEvaluando = Math.sqrt(Math.pow(filaInicial - o.pos[0], 2) + Math.pow(i - o.pos[1], 2));
-                        if (objetoEvaluando instanceof Organismo && distanciaPuntos > distanciaObjetoEvaluando) {
+                        if (objetoEvaluando instanceof Organismo && ((encontradoEsOrganismo && distanciaPuntos > distanciaObjetoEvaluando) || !encontradoEsOrganismo)){
                             // toma valores para objeto organismo
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = filaInicial;
                             indiceObjetoEncontrado[1] = i;
-                        } else if ((!(objetoEncontrado instanceof Organismo) || objetoEncontrado == o) &&
-                                objetoEvaluando instanceof AlimentoEnergia && distanciaPuntos > distanciaObjetoEvaluando) {
+                        } else if (objetoEvaluando instanceof AlimentoEnergia && ((encontradoEsAliEnergia && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia))){
                             // toma valores para alimento energia
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = filaInicial;
                             indiceObjetoEncontrado[1] = i;
-                        } else if ((!(objetoEncontrado instanceof Organismo || objetoEncontrado instanceof AlimentoEnergia) ||
-                                objetoEncontrado == o) && objetoEvaluando instanceof AlimentoVision && distanciaPuntos > distanciaObjetoEvaluando) {
+                        } else if (objetoEvaluando instanceof AlimentoVision && ((encontradoEsAliVis && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia && !encontradoEsAliVis))){
                             // toma valores para alimento de velocidad
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = filaInicial;
                             indiceObjetoEncontrado[1] = i;
-                        } else if ((!(objetoEncontrado instanceof Organismo || objetoEncontrado instanceof AlimentoEnergia ||
-                                objetoEncontrado instanceof AlimentoVision) || objetoEncontrado == o) &&
-                                objetoEvaluando instanceof AlimentoVelocidad && distanciaPuntos > distanciaObjetoEvaluando) {
+                        } else if (objetoEvaluando instanceof AlimentoVelocidad && ((encontradoEsAliVel && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia && !encontradoEsAliVis && !encontradoEsAliVel))){
                             // toma valores para alimento vision
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
@@ -718,30 +723,30 @@ public class Mapa{
                     // evalua si la posicion a evaluar es un Alimento o un Organismo y que la distancia entre el Organismo que realiza la busqueda
                     // y el Alimento u Organismo encontrado es menor
                     if (objetoEvaluando != null) {
+                        encontradoEsOrganismo = objetoEncontrado instanceof Organismo;
+                        encontradoEsAliEnergia = objetoEncontrado instanceof AlimentoEnergia;
+                        encontradoEsAliVis = objetoEncontrado instanceof AlimentoVision;
+                        encontradoEsAliVel = objetoEncontrado instanceof AlimentoVelocidad;
                         distanciaObjetoEvaluando = Math.sqrt(Math.pow(i - o.pos[0], 2) + Math.pow(columnaFinal - o.pos[1], 2));
-                        if (objetoEvaluando instanceof Organismo && distanciaPuntos > distanciaObjetoEvaluando) {
+                        if (objetoEvaluando instanceof Organismo && ((encontradoEsOrganismo && distanciaPuntos > distanciaObjetoEvaluando) || !encontradoEsOrganismo)) {
                             // toma valores para objeto organismo
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = i;
                             indiceObjetoEncontrado[1] = columnaFinal;
-                        } else if ((!(objetoEncontrado instanceof Organismo) || objetoEncontrado == o) &&
-                                objetoEvaluando instanceof AlimentoEnergia && distanciaPuntos > distanciaObjetoEvaluando) {
+                        } else if (objetoEvaluando instanceof AlimentoEnergia && ((encontradoEsAliEnergia && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia))) {
                             // toma valores para alimento energia
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = i;
                             indiceObjetoEncontrado[1] = columnaFinal;
-                        } else if ((!(objetoEncontrado instanceof Organismo || objetoEncontrado instanceof AlimentoEnergia) ||
-                                objetoEncontrado == o) && objetoEvaluando instanceof AlimentoVision && distanciaPuntos > distanciaObjetoEvaluando) {
+                        } else if (objetoEvaluando instanceof AlimentoVision && ((encontradoEsAliVis && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia && !encontradoEsAliVis))) {
                             // toma valores para alimento de velocidad
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = i;
                             indiceObjetoEncontrado[1] = columnaFinal;
-                        } else if ((!(objetoEncontrado instanceof Organismo || objetoEncontrado instanceof AlimentoEnergia ||
-                                objetoEncontrado instanceof AlimentoVision) || objetoEncontrado == o) &&
-                                objetoEvaluando instanceof AlimentoVelocidad && distanciaPuntos > distanciaObjetoEvaluando) {
+                        } else if (objetoEvaluando instanceof AlimentoVelocidad && ((encontradoEsAliVel && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia && !encontradoEsAliVis && !encontradoEsAliVel))){
                             // toma valores para alimento vision
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
@@ -772,30 +777,30 @@ public class Mapa{
                     // evalua si la posicion a evaluar es un Alimento o un Organismo y que la distancia entre el Organismo que realiza la busqueda
                     // y el Alimento u Organismo encontrado es menor
                     if (objetoEvaluando != null) {
+                        encontradoEsOrganismo = objetoEncontrado instanceof Organismo;
+                        encontradoEsAliEnergia = objetoEncontrado instanceof AlimentoEnergia;
+                        encontradoEsAliVis = objetoEncontrado instanceof AlimentoVision;
+                        encontradoEsAliVel = objetoEncontrado instanceof AlimentoVelocidad;
                         distanciaObjetoEvaluando = Math.sqrt(Math.pow(filaFinal - o.pos[0], 2) + Math.pow(i - o.pos[1], 2));
-                        if (objetoEvaluando instanceof Organismo && distanciaPuntos > distanciaObjetoEvaluando) {
+                        if (objetoEvaluando instanceof Organismo && ((encontradoEsOrganismo && distanciaPuntos > distanciaObjetoEvaluando) || !encontradoEsOrganismo)) {
                             // toma valores para objeto organismo
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = filaFinal;
                             indiceObjetoEncontrado[1] = i;
-                        } else if ((!(objetoEncontrado instanceof Organismo) || objetoEncontrado == o) &&
-                                objetoEvaluando instanceof AlimentoEnergia && distanciaPuntos > distanciaObjetoEvaluando) {
+                        } else if (objetoEvaluando instanceof AlimentoEnergia && ((encontradoEsAliEnergia && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia))) {
                             // toma valores para alimento energia
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = filaFinal;
                             indiceObjetoEncontrado[1] = i;
-                        } else if ((!(objetoEncontrado instanceof Organismo || objetoEncontrado instanceof AlimentoEnergia) ||
-                                objetoEncontrado == o) && objetoEvaluando instanceof AlimentoVision && distanciaPuntos > distanciaObjetoEvaluando) {
+                        } else if (objetoEvaluando instanceof AlimentoVision && ((encontradoEsAliVis && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia && !encontradoEsAliVis))) {
                             // toma valores para alimento de velocidad
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = filaFinal;
                             indiceObjetoEncontrado[1] = i;
-                        } else if ((!(objetoEncontrado instanceof Organismo || objetoEncontrado instanceof AlimentoEnergia ||
-                                objetoEncontrado instanceof AlimentoVision) || objetoEncontrado == o) &&
-                                objetoEvaluando instanceof AlimentoVelocidad && distanciaPuntos > distanciaObjetoEvaluando) {
+                        } else if (objetoEvaluando instanceof AlimentoVelocidad && ((encontradoEsAliVel && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia && !encontradoEsAliVis && !encontradoEsAliVel))){
                             // toma valores para alimento vision
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
@@ -826,30 +831,30 @@ public class Mapa{
                     // evalua si la posicion a evaluar es un Alimento o un Organismo y que la distancia entre el Organismo que realiza la busqueda
                     // y el Alimento u Organismo encontrado es menor
                     if (objetoEvaluando != null) {
+                        encontradoEsOrganismo = objetoEncontrado instanceof Organismo;
+                        encontradoEsAliEnergia = objetoEncontrado instanceof AlimentoEnergia;
+                        encontradoEsAliVis = objetoEncontrado instanceof AlimentoVision;
+                        encontradoEsAliVel = objetoEncontrado instanceof AlimentoVelocidad;
                         distanciaObjetoEvaluando = Math.sqrt(Math.pow(i - o.pos[0], 2) + Math.pow(columnaInicial - o.pos[1], 2));
-                        if (objetoEvaluando instanceof Organismo && distanciaPuntos > distanciaObjetoEvaluando) {
+                        if (objetoEvaluando instanceof Organismo && ((encontradoEsOrganismo && distanciaPuntos > distanciaObjetoEvaluando) || !encontradoEsOrganismo)) {
                             // toma valores para objeto organismo
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = i;
                             indiceObjetoEncontrado[1] = columnaInicial;
-                        } else if ((!(objetoEncontrado instanceof Organismo) || objetoEncontrado == o) &&
-                                objetoEvaluando instanceof AlimentoEnergia && distanciaPuntos > distanciaObjetoEvaluando) {
+                        } else if (objetoEvaluando instanceof AlimentoEnergia && ((encontradoEsAliEnergia && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia))) {
                             // toma valores para alimento energia
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = i;
                             indiceObjetoEncontrado[1] = columnaInicial;
-                        } else if ((!(objetoEncontrado instanceof Organismo || objetoEncontrado instanceof AlimentoEnergia) ||
-                                objetoEncontrado == o) && objetoEvaluando instanceof AlimentoVision && distanciaPuntos > distanciaObjetoEvaluando) {
+                        } else if (objetoEvaluando instanceof AlimentoVision && ((encontradoEsAliVis && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia && !encontradoEsAliVis))) {
                             // toma valores para alimento de velocidad
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
                             indiceObjetoEncontrado[0] = i;
                             indiceObjetoEncontrado[1] = columnaInicial;
-                        } else if ((!(objetoEncontrado instanceof Organismo || objetoEncontrado instanceof AlimentoEnergia ||
-                                objetoEncontrado instanceof AlimentoVision) || objetoEncontrado == o) &&
-                                objetoEvaluando instanceof AlimentoVelocidad && distanciaPuntos > distanciaObjetoEvaluando) {
+                        } else if (objetoEvaluando instanceof AlimentoVelocidad && ((encontradoEsAliVel && distanciaPuntos > distanciaObjetoEvaluando) || (!encontradoEsOrganismo && !encontradoEsAliEnergia && !encontradoEsAliVis && !encontradoEsAliVel))){
                             // toma valores para alimento vision
                             distanciaPuntos = distanciaObjetoEvaluando;
                             objetoEncontrado = objetoEvaluando;
