@@ -22,4 +22,5 @@ public abstract class Organismo implements NPC{
     public abstract String getInformacion();
     public abstract void aumentarEdad();
     public abstract void disminuirEnergia();
+    public abstract void perderVision();
 }

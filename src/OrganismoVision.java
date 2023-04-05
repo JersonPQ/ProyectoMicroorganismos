@@ -138,4 +138,24 @@ public class OrganismoVision extends Organismo{
         return imagen;
     }
 
+    public void perderVision(){
+        if( 5 < this.edad && this.edad < 10){
+            this.vision -= 1;
+        }
+        if( 10 < this.edad && this.edad < 15){
+            this.vision -= 2;
+        }
+        if( 20 < this.edad && this.edad < 25){
+            this.vision -= 3;
+        }
+        if( 30 < this.edad && this.edad < 35){
+            this.vision -= 4;
+        }
+        if( 35 < this.edad && this.edad < 40){
+            this.vision -= 5;
+        }
+        if( 40 < this.edad){
+            this.vision -= 6;
+        }
+    }
 }

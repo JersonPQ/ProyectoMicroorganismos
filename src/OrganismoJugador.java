@@ -7,7 +7,7 @@ public class OrganismoJugador extends Organismo{
     public OrganismoJugador(){
         edad = 1;
         energia = 50;
-        vision = 1;
+        vision = 5;
         // PRUEBA
         velocidad = 4;
         this.pos = new int[2];
@@ -128,5 +128,26 @@ public class OrganismoJugador extends Organismo{
     public ImageIcon setImagen(){
         ImageIcon imagen = new ImageIcon("images/leon.png");
         return imagen;
+    }
+
+    public void perderVision(){
+        if( 5 < this.edad && this.edad < 10){
+            this.vision -= 1;
+        }
+        if( 10 < this.edad && this.edad < 15){
+            this.vision -= 2;
+        }
+        if( 20 < this.edad && this.edad < 25){
+            this.vision -= 3;
+        }
+        if( 30 < this.edad && this.edad < 35){
+            this.vision -= 4;
+        }
+        if( 35 < this.edad && this.edad < 40){
+            this.vision -= 5;
+        }
+        if( 40 < this.edad){
+            this.vision -= 6;
+        }
     }
 }

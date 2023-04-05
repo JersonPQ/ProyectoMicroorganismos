@@ -94,6 +94,7 @@ public class Interface {
 
             // aumenta la edad del organismo que acaba de moverse despues de realizar sus movimientos
             organismoAMoverse.aumentarEdad();
+            organismoAMoverse.perderVision();
             ++contadorTurno;
             if (contadorTurno >= organismos.length){
                 contadorTurno = 0;
