@@ -1,21 +1,28 @@
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
 
 public class Interface {
     private JFrame ventana;
     private Mapa miMapa;
     OyenteTeclado oyente;
+    Musica musica;
     private int contadorPasos;
-    public Interface(int organismos, int alimentos, int matriz) throws InterruptedException{
+    public Interface(int organismos, int alimentos, int matriz) throws InterruptedException, IOException {
         ventana = new JFrame();
         ventana.setTitle("Proyecto POO | Darío y Jerson");
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         miMapa = new Mapa(organismos, alimentos, matriz);
         oyente = new OyenteTeclado();
+        musica = new Musica();
 
         addComponentes();
 
@@ -61,7 +68,7 @@ public class Interface {
         ventana.add(mapaPanel);
     }
 
-    public void simular() throws InterruptedException{
+    public void simular() throws InterruptedException, IOException {
         Organismo[] organismos = miMapa.getOrganismos();
         int contadorTurno = 0;
         while (miMapa.getJugando()) {
@@ -101,6 +108,8 @@ public class Interface {
             }
         }
 
+        musica.setArchivo("sound/sonido_final.wav");
+        musica.reproducir();
         JOptionPane.showMessageDialog(null, "Has perdido!");
     }
 
@@ -296,6 +305,43 @@ public class Interface {
                     }
                 }
             }
+        }
+    }
+
+    public class Musica{
+        Clip clip;
+        AudioInputStream sonido;
+
+        public void setArchivo(String _nombreArchivoSonido){
+            try {
+                File archivo = new File(_nombreArchivoSonido);
+                sonido = AudioSystem.getAudioInputStream(archivo);
+                clip = AudioSystem.getClip();
+                clip.open(sonido);
+            } catch (Exception e){
+
+            }
+        }
+
+        public void reproducir(){
+            // le asigna como al atributo clip la bandera de que esta iniciada la musica
+            clip.start();
+        }
+
+        public void reproducirLoop(){
+            // inicia el loop de la musica
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+            // le asigna al atributo clip la bandera de que esta iniciada la musica
+            clip.start();
+        }
+
+        public void detener() throws IOException {
+            // cierra la comunicacion con el archivo de sonido
+            sonido.close();
+            // cierra el audio
+            clip.close();
+            // detiene la musica, y le asigna la bandera de false a clip
+            clip.stop();
         }
     }
 }

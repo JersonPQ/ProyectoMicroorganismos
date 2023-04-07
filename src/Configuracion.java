@@ -1,7 +1,12 @@
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 public class Configuracion {
     private JFrame Ventana;
@@ -26,6 +31,7 @@ public class Configuracion {
     private JComboBox<Integer> comboVision;
     private JButton botonJuego;
     private Interface juego;
+    Musica musica = new Musica();
     private boolean bandera = false;
     static int maxEnergia;
     static int maxVelocidad;
@@ -38,7 +44,7 @@ public class Configuracion {
     int cantOrganismos;
     int cantAlimentos;
 
-    public Configuracion() throws InterruptedException{
+    public Configuracion() throws InterruptedException, IOException {
         //Ponemos las configuraciones básicas a la ventan
         Ventana = new JFrame("Ventana de configuración");
         Ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -197,6 +203,28 @@ public class Configuracion {
             velocidad = (int)comboVelocidad.getSelectedItem();
             vision = (int)comboVision.getSelectedItem();
             bandera = true;
+            musica.setArchivo("sound/sonido_inicio.wav");
+            musica.reproducir();
+        }
+    }
+
+    public class Musica{
+        Clip clip;
+        AudioInputStream sonido;
+
+        public void setArchivo(String _nombreArchivoSonido){
+            try {
+                File archivo = new File(_nombreArchivoSonido);
+                sonido = AudioSystem.getAudioInputStream(archivo);
+                clip = AudioSystem.getClip();
+                clip.open(sonido);
+            } catch (Exception e){
+
+            }
+        }
+
+        public void reproducir(){
+            clip.start();
         }
     }
 }
