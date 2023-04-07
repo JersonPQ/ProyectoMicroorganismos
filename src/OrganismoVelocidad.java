@@ -18,10 +18,10 @@ public class OrganismoVelocidad extends Organismo{
             rnd = new Random();
             ganadorAleatorio = rnd.nextBoolean();
             // en caso de que el random tome boolean 0 quiere decir que el aleatorio no favoreció al Organismo que va a comer
+                organismoAComer.vision += vision / 2;
             if (!ganadorAleatorio) {
                 organismoAComer.energia += energia / 2;
                 organismoAComer.velocidad += velocidad / 2;
-                organismoAComer.vision += vision / 2;
                 ganador =  false;
             } else {
                 this.energia += (organismoAComer.energia) / 2;

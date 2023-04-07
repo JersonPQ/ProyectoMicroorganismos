@@ -145,8 +145,8 @@ public class OrganismoJugador extends Organismo{
             this.vision -= 6;
         }
         //Este es para validar que no baje de cero
-        if(this.edad < 1){
-            this.edad = 1;
+        if(this.vision < 1){
+            this.vision = 1;
         }
     }
 }

@@ -11,15 +11,11 @@ public abstract class Organismo implements NPC{
     protected Random rnd;
     protected boolean ganadorAleatorio;
 
-    public abstract void setPosition(int i, int j);
     public abstract boolean atacar(Organismo organismoAComer);
     public abstract void atacar(AlimentoEnergia alimentoEnergia);
     public abstract void atacar(AlimentoVelocidad alimentoVelocidad);
     public abstract void atacar(AlimentoVision alimentoVision);
     public abstract boolean comprobarAtaque(Organismo organismoAComer);
-    public abstract ImageIcon setImagen();
-    public abstract int[] getPosition();
-    public abstract String getInformacion();
     public abstract void aumentarEdad();
     public abstract void disminuirEnergia();
     public abstract void perderVision();
