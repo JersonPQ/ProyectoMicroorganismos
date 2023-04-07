@@ -7,9 +7,8 @@ public class OrganismoJugador extends Organismo{
     public OrganismoJugador(){
         edad = 1;
         energia = Configuracion.maxEnergia;
-        vision = 5;
-        // PRUEBA
-        velocidad = 10;
+        vision = 1;
+        velocidad = 1;
         this.pos = new int[2];
     }
 
@@ -21,7 +20,6 @@ public class OrganismoJugador extends Organismo{
             // en caso de que el random tome boolean 0 quiere decir que el aleatorio no favoreció al OrganismoJugador
             if (!ganadorAleatorio) {
                 /* Jugador pierde */
-//                jugadorJugando = false;
                 System.out.println("Jugador Pierde");
                 ganador = false;
             } else {
@@ -37,7 +35,6 @@ public class OrganismoJugador extends Organismo{
             ganador = true;
         } else {
             /* Jugador pierde */
-//            jugadorJugando = false;
             System.out.println("Jugador Pierde");
             ganador = false;
         }

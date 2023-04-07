@@ -5,10 +5,9 @@ public class OrganismoVision extends Organismo{
 
     public OrganismoVision(){
         edad = 1;
-        energia = 15;
-        vision = 5;
-        // PRUEBA
-        velocidad = 7;
+        energia = Configuracion.maxEnergia;
+        vision = 1;
+        velocidad = 1;
         this.pos = new int[2];
     }
 
@@ -153,8 +152,8 @@ public class OrganismoVision extends Organismo{
             this.vision -= 6;
         }
         //Este es para validar que no baje de cero
-        if(this.edad < 1){
-            this.edad = 1;
+        if(this.vision < 1){
+            this.vision = 1;
         }
     }
 }

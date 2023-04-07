@@ -5,10 +5,9 @@ public class OrganismoVelocidad extends Organismo{
 
     public OrganismoVelocidad(){
         edad = 1;
-        energia = 15;
-        vision = 5;
-        // PRUEBA
-        velocidad = 5;
+        energia = Configuracion.maxEnergia;
+        vision = 1;
+        velocidad = 1;
         this.pos = new int[2];
     }
 
@@ -18,10 +17,10 @@ public class OrganismoVelocidad extends Organismo{
             rnd = new Random();
             ganadorAleatorio = rnd.nextBoolean();
             // en caso de que el random tome boolean 0 quiere decir que el aleatorio no favoreció al Organismo que va a comer
-                organismoAComer.vision += vision / 2;
             if (!ganadorAleatorio) {
                 organismoAComer.energia += energia / 2;
                 organismoAComer.velocidad += velocidad / 2;
+                organismoAComer.vision += vision / 2;
                 ganador =  false;
             } else {
                 this.energia += (organismoAComer.energia) / 2;
@@ -154,8 +153,8 @@ public class OrganismoVelocidad extends Organismo{
             this.vision -= 6;
         }
         //Este es para validar que no baje de cero
-        if(this.edad < 1){
-            this.edad = 1;
+        if(this.vision < 1){
+            this.vision = 1;
         }
     }
 }

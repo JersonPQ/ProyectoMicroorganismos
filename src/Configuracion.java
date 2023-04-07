@@ -125,7 +125,7 @@ public class Configuracion {
         centro.add(comboAlimentos);
 
         //Items del comboEnergia
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 10; i++) {
             comboEnergia.addItem(i);
         }
         centro.add(comboEnergia);
