@@ -325,11 +325,20 @@ public class Mapa{
             if (objetoSiguiCasilla instanceof OrganismoJugador){
                 // le asigna jugando false porque se comio al organismoJugador
 //                ((OrganismoJugador) objetoSiguiCasilla).setJugadorJugando(false);
-                jugando = false;
+                Organismo organismoAAtacar = (Organismo) objetoSiguiCasilla;
+                // evalua si organismo se pudo comer a organismoJugador, caso contrario organismoJugador toma atributos
+                if (organismo.atacar(organismoAAtacar)){
+                    jugando = false;
+                } else {
+                    organismoAAtacar.atacar(organismo);
+                }
+
             } else if (objetoSiguiCasilla instanceof Organismo){
                 Organismo organismoAAtacar = (Organismo) objetoSiguiCasilla;
                 if (organismo.atacar(organismoAAtacar)){
                     eliminarOrganismo(organismoAAtacar);
+                } else {
+                    organismoAAtacar.atacar(organismo);
                 }
 
             } else if (objetoSiguiCasilla instanceof AlimentoEnergia) {
@@ -857,6 +866,17 @@ public class Mapa{
 
         // si no encuentra Alimento u Organismo en el radio de vision retorna la misma posicion del Organismo
         return indiceObjetoEncontrado;
+    }
+
+    // funcion para saber si los organismos todavia tienen energia
+    public boolean organismosTienenEnergia(){
+        for (Organismo organismo: organismos) {
+            if (organismo.energia > 0){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     //Getters

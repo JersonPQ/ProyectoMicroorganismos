@@ -138,19 +138,32 @@ public class OrganismoVision extends Organismo{
     }
 
     public void perderVision(){
-        if( 5 < this.edad && this.edad <= 10){
-            this.vision -= 1;
-        } else if ( 10 < this.edad && this.edad <= 20){
-            this.vision -= 2;
-        } else if ( 20 < this.edad && this.edad <= 30){
-            this.vision -= 3;
-        } else if ( 30 < this.edad && this.edad <= 35){
-            this.vision -= 4;
-        } else if ( 35 < this.edad && this.edad <= 40){
-            this.vision -= 5;
-        } else if ( 40 < this.edad){
-            this.vision -= 6;
+        switch (this.edad){
+            case 10:
+                this.vision -= 1;
+                break;
+            case 20:
+                this.vision -= 2;
+                break;
+            case 30:
+                this.vision -= 3;
+                break;
+            case 35:
+                this.vision -= 4;
+                break;
+            case 40:
+                this.vision -= 5;
+                break;
+            case 45:
+                this.vision -= 6;
+                break;
+            default:
+                if (65 < this.edad){
+                    this.vision -= 7;
+                }
+                break;
         }
+
         //Este es para validar que no baje de cero
         if(this.vision < 1){
             this.vision = 1;

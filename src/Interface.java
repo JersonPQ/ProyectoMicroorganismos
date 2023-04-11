@@ -71,7 +71,7 @@ public class Interface {
     public void simular() throws InterruptedException, IOException {
         Organismo[] organismos = miMapa.getOrganismos();
         int contadorTurno = 0;
-        while (miMapa.getJugando()) {
+        while (miMapa.getJugando() && miMapa.organismosTienenEnergia()) {
             contadorPasos = 0;
             Organismo organismoAMoverse = organismos[contadorTurno];
             if (organismoAMoverse instanceof OrganismoJugador && organismoAMoverse.energia > 0){
@@ -110,7 +110,12 @@ public class Interface {
 
         musica.setArchivo("sound/sonido_final.wav");
         musica.reproducir();
-        JOptionPane.showMessageDialog(null, "Has perdido!");
+        if (!(miMapa.organismosTienenEnergia())){
+            JOptionPane.showMessageDialog(null, "Se ha acabado el juego! " +
+                    "Todos los organismos se han quedado sin energia.");
+        } else {
+            JOptionPane.showMessageDialog(null, "Has perdido!");
+        }
     }
 
     //Crear la clase KeyListenes
