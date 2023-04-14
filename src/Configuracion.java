@@ -96,6 +96,8 @@ public class Configuracion {
         //Items del comboMaxEnergy
         comboMaxEnergy.addItem(30);
         comboMaxEnergy.addItem(40);
+        comboMaxEnergy.addItem(50);
+        comboMaxEnergy.addItem(70);
         comboMaxEnergy.addItem(100);
         comboMaxEnergy.setSize(500, 500);
         centro.add(comboMaxEnergy);
@@ -140,12 +142,18 @@ public class Configuracion {
         comboVelocidad.addItem(1);
         comboVelocidad.addItem(2);
         comboVelocidad.addItem(3);
+        comboVelocidad.addItem(4);
+        comboVelocidad.addItem(5);
+        comboVelocidad.addItem(6);
         centro.add(comboVelocidad);
 
         //Items del comboVision
         comboVision.addItem(1);
         comboVision.addItem(2);
         comboVision.addItem(3);
+        comboVision.addItem(4);
+        comboVision.addItem(5);
+        comboVision.addItem(6);
         centro.add(comboVision);
 
         centro.add(espaciadorBoton);

@@ -26,7 +26,7 @@ public class OrganismoVision extends Organismo{
     }
 
     public ImageIcon setImagen(){
-        ImageIcon imagen = new ImageIcon("images/loro.png");
+        ImageIcon imagen = new ImageIcon("images/murcielago.png");
         return imagen;
     }
 }
