@@ -1,10 +1,12 @@
 import javax.swing.ImageIcon;
+import java.util.Random;
 
 public class AlimentoVelocidad extends Alimento{
     private int velocidad;
 
     public AlimentoVelocidad(){
-        velocidad = Configuracion.velocidad;
+        Random rnd = new Random();
+        velocidad = rnd.nextInt(Configuracion.velocidad) + 1;
         this.pos = new int[2];
     }
 

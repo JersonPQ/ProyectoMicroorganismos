@@ -7,7 +7,7 @@ public class AlimentoEnergia extends Alimento{
     public AlimentoEnergia(){
         Random rnd = new Random();
         // random de energia entre 1 y el maximo dado en configuracion
-        energia = rnd.nextInt(Configuracion.energia) + 1; ;
+        energia = rnd.nextInt(Configuracion.energia) + 1;
         this.pos = new int[2];
     }
 

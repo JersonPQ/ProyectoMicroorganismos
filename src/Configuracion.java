@@ -96,7 +96,7 @@ public class Configuracion {
         //Items del comboMaxEnergy
         comboMaxEnergy.addItem(30);
         comboMaxEnergy.addItem(40);
-        comboMaxEnergy.addItem(50);
+        comboMaxEnergy.addItem(100);
         comboMaxEnergy.setSize(500, 500);
         centro.add(comboMaxEnergy);
 
@@ -158,9 +158,9 @@ public class Configuracion {
         labelMatriz = new JLabel("Tamaño de la matriz:");
         labelOrganismos = new JLabel("Cantidad de organismos:");
         labelAlimentos = new JLabel("Cantidad de alimentos:");
-        labelEnergia = new JLabel("Cantidad maxima de energia por alimento:");
-        labelVelocidad = new JLabel("Cantidad de velocidad por alimento:");
-        labelVision = new JLabel("Cantidad de vision por alimento:");
+        labelEnergia = new JLabel("Cantidad máxima de energia por alimento:");
+        labelVelocidad = new JLabel("Cantidad máxima de velocidad por alimento:");
+        labelVision = new JLabel("Cantidad máxima de vision por alimento:");
 
         //Colocamos fuentes y tamaño a los label
         labelMaxEnergy.setFont(new Font("Arial", Font.PLAIN, 20));

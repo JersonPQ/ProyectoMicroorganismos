@@ -1,10 +1,12 @@
 import javax.swing.ImageIcon;
+import java.util.Random;
 
 public class AlimentoVision extends Alimento{
     private int vision;
 
     public AlimentoVision(){
-        vision = Configuracion.vision;
+        Random rnd = new Random();
+        vision = rnd.nextInt(Configuracion.vision) + 1;
         this.pos = new int[2];
     }
 

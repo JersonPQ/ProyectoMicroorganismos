@@ -12,10 +12,11 @@ public abstract class Organismo implements NPC{
     protected boolean ganadorAleatorio;
 
     public Organismo(){
+        rnd = new Random();
         edad = 1;
         energia = Configuracion.maxEnergia;
-        vision = 1;
-        velocidad = 1;
+        vision = rnd.nextInt(3) + 1;
+        velocidad = rnd.nextInt(3) + 1;
         this.pos = new int[2];
     }
 
